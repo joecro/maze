@@ -1,0 +1,23 @@
+body {
+  overflow:hidden;
+  margin:0;
+  background-image: url(/images/tile-4.svg);
+  background-size: cover;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.map-tile {
+  background-color: green;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.map-tile > path {
+  fill: beige;
+  stroke: beige;
+  stroke-width: 0.1;
+  stroke-linejoin: round;
+}

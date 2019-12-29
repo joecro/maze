@@ -1,0 +1,4 @@
+<svg class="map-tile tile-zero" viewBox="0 0 50 50">
+
+    <path d="M20 0 v10h-5v5h20v-5h-5v-10" />
+</svg>
