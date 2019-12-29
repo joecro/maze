@@ -68,6 +68,34 @@ for ( let tile of tiles) {
     tile.addEventListener(transitionEnd, stopMoving, false)
 };
 
+
+function hideBorderBump(ev) {
+    let borderElement = ev.target;
+    let bumpClass = borderElement.getAttribute('class');
+
+    borderElement.setAttribute('class', bumpClass.replace('bump','').trim());
+}
+
+/**
+ * User tried an illegal move.  Bump shows they can't go that way
+ * @param {String} direction 
+ */
+function bump(direction) {
+    let borders = document.getElementsByClassName(direction + '-border');
+   
+    if (borders.length != 1) {
+        console.log('something went wrong in move. Either too many or not enough borders');
+        return 0;
+    }; 
+
+    border = borders[0];
+    border.addEventListener(transitionEnd, hideBorderBump, false);
+
+    let currentClass = border.getAttribute('class');
+    border.setAttribute('class', currentClass + ' bump');
+}
+
+
 /**
  * Move the current tile out of view and bring the next one in
  * @param {} direction 
@@ -114,19 +142,151 @@ function logKey(e) {
     switch (e.code) {
         case 'ArrowUp':
         case 'KeyI':
-            move('north');
+            canIMoveNorth();
             break;
         case 'ArrowDown':
         case 'KeyM':
-            move('south');
+            canIMoveSouth();
             break;
         case 'ArrowRight':
         case 'KeyK':
-            move('east');
+            canIMoveEast();
             break;
         case 'ArrowLeft':
         case 'KeyJ':
-            move('west');
+            canIMoveWest();
             break;
   }
 }
+
+/**
+ * Get the tile number for the current tile.  eg to see which direction/s we can move
+ */
+function getCurrentTileNumber() {
+    let currents = document.getElementsByClassName('map-tile current');
+    
+    if (currents.length != 1) {
+        console.log('something went wrong in getCurrentTileNumber. Either too many or not enough tiles');
+        return 0;
+    };
+
+    let current = currents[0];
+    let currentTileSVG = current.children[0];
+    let currentTileNumber = currentTileSVG.getAttribute('class');
+
+    return currentTileNumber;
+}
+
+/**
+ * Check if it's possible to move North from the current tile. (based on available exits)
+ */
+function canIMoveNorth() {
+
+    let tileNumber = getCurrentTileNumber();
+
+    switch (tileNumber) {
+        case 'tile-000':
+        case 'tile-002':
+        case 'tile-004':
+        case 'tile-006':
+        case 'tile-008':
+        case 'tile-010':
+        case 'tile-012':
+        case 'tile-014':
+            bump('north');
+            break;
+        case 'tile-001':
+        case 'tile-003':
+        case 'tile-005':
+        case 'tile-007':
+        case 'tile-009':
+        case 'tile-011':
+        case 'tile-013':
+        case 'tile-015':
+            move('north');
+            break;
+    }
+} 
+
+function canIMoveSouth() {
+    let tileNumber = getCurrentTileNumber();
+
+    switch (tileNumber) {
+        case 'tile-000':
+        case 'tile-001':
+        case 'tile-002':
+        case 'tile-003':
+        case 'tile-004':
+        case 'tile-005':
+        case 'tile-006':
+        case 'tile-007':
+            bump('south');
+            break;
+        case 'tile-008':
+        case 'tile-009':
+        case 'tile-010':
+        case 'tile-011':
+        case 'tile-012':
+        case 'tile-013':
+        case 'tile-014':
+        case 'tile-015':
+            move('south');
+            break;
+    }
+} 
+
+function canIMoveEast() {
+
+    let tileNumber = getCurrentTileNumber();
+
+    switch (tileNumber) {
+        case 'tile-000':
+        case 'tile-001':
+        case 'tile-004':
+        case 'tile-005':
+        case 'tile-008':
+        case 'tile-009':
+        case 'tile-012':
+        case 'tile-013':
+            bump('east');
+            break;
+        case 'tile-002':
+        case 'tile-003':
+        case 'tile-006':
+        case 'tile-007':
+        case 'tile-010':
+        case 'tile-011':
+        case 'tile-014':
+        case 'tile-015':
+            move('east');
+            break;
+    }
+}
+
+function canIMoveWest() {
+
+    let tileNumber = getCurrentTileNumber();
+
+    switch (tileNumber) {
+        case 'tile-000':
+        case 'tile-001':
+        case 'tile-002':
+        case 'tile-003':
+        case 'tile-008':
+        case 'tile-009':
+        case 'tile-010':
+        case 'tile-011':
+            bump('west');
+            break;
+        case 'tile-004':
+        case 'tile-005':
+        case 'tile-006':
+        case 'tile-007':
+        case 'tile-012':
+        case 'tile-013':
+        case 'tile-014':
+        case 'tile-015':
+            move('west');
+            break;
+    }
+} 

@@ -16,18 +16,16 @@ a {
   left: 50%;
   transform: translate(-50%, -50%);
   transition: all 0.5s;
-  z-index: -1;
+  z-index: -100;
 }
+
+
+
+
 
 .map-tile.current {
-  z-index: 1;
+  z-index: 100;
 }
-
-.map-tile.hidden,
-.map-tile.hidden svg path {
-  display:none;
-}
-
 
 .map-tile.north {
   top: 0;
@@ -57,24 +55,6 @@ a {
   display:none;
 }
 
-/*
-.hidden .tile-001 .path-001,
-.hidden .tile-002 .path-002,
-.hidden .tile-003 .path-003,
-.hidden .tile-004 .path-004,
-.hidden .tile-005 .path-005,
-.hidden .tile-006 .path-006,
-.hidden .tile-007 .path-007,
-.hidden .tile-008 .path-008,
-.hidden .tile-009 .path-009,
-.hidden .tile-010 .path-010,
-.hidden .tile-011 .path-011,
-.hidden .tile-012 .path-012,
-.hidden .tile-013 .path-013,
-.hidden .tile-014 .path-014,
-.hidden .tile-015 .path-015 {
-  display:none;
-}*/
 
 .tile-001 .path-001,
 .tile-002 .path-002,
@@ -93,3 +73,51 @@ a {
 .tile-015 .path-015 {
   display:block;
 }
+
+
+
+/**
+ * Borders - to stop people going the wrong way
+ */
+ .border {
+  background-color: darkolivegreen;
+  position:fixed;
+  transition-duration: 0.2s;
+  z-index:200;
+}
+
+.north-border {
+  top:0;
+  width: 100vw;
+  height:0;
+}
+
+.south-border {
+  bottom:0;
+  width: 100vw;
+  height:0;
+}
+
+.north-border.bump,
+.south-border.bump {
+  height:25px;
+}
+
+.east-border {
+  top:0;
+  right:0;
+  width: 0;
+  height: 100vh;
+}
+
+.west-border {
+  top:0;
+  left:0;
+  width: 0;
+  height: 100vh;
+}
+
+.east-border.bump,
+.west-border.bump {
+  width:25px;
+} 
