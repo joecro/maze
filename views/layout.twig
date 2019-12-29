@@ -3,8 +3,40 @@
   <head>
     <title>{{ title }}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type='text/javascript' src='/js/maze.js'></script>
   </head>
   <body>
+    <div class="map-tile current">
+      <svg class="tile-015" viewBox="0 0 50 50">
+          {% block tilepaths %}{% endblock %}
+      </svg>
+    </div>
+
+    <div class="map-tile north">
+      <svg class="tile-010" viewBox="0 0 50 50">
+          {% block tilepaths %}{% endblock %}
+      </svg>
+    </div>
+
+    <div class="map-tile south">
+      <svg class="tile-003" viewBox="0 0 50 50">
+          {% block tilepaths %}{% endblock %}
+      </svg>
+    </div>
+
+    <div class="map-tile east">
+      <svg class="tile-006" viewBox="0 0 50 50">
+          {% block tilepaths %}{% endblock %}
+      </svg>
+    </div>
+
+    <div class="map-tile west">
+      <svg class="tile-010" viewBox="0 0 50 50">
+          {% block tilepaths %}{% endblock %}
+      </svg>
+    </div>
+
     {% block body %}{% endblock %}
+
   </body>
 </html>

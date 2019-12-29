@@ -1,8 +1,6 @@
 body {
   overflow:hidden;
   margin:0;
-  background-image: url(/images/tile-4.svg);
-  background-size: cover;
 }
 
 a {
@@ -13,11 +11,85 @@ a {
   background-color: green;
   min-height: 100vh;
   min-width: 100vw;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.5s;
+  z-index: -1;
 }
 
-.map-tile > path {
+.map-tile.current {
+  z-index: 1;
+}
+
+.map-tile.hidden,
+.map-tile.hidden svg path {
+  display:none;
+}
+
+
+.map-tile.north {
+  top: 0;
+  transform: translate(-50%,-100%);
+}
+
+.map-tile.south {
+  top: 0;
+  transform: translate(-50%,100%);
+}
+
+.map-tile.east {
+  left: 0;
+  transform: translate(100%,-50%);
+}
+
+.map-tile.west {
+  left: 0;
+  transform: translate(-100%,-50%);
+}
+
+.map-tile > svg > path {
   fill: beige;
   stroke: beige;
   stroke-width: 0.1;
   stroke-linejoin: round;
+  display:none;
+}
+
+/*
+.hidden .tile-001 .path-001,
+.hidden .tile-002 .path-002,
+.hidden .tile-003 .path-003,
+.hidden .tile-004 .path-004,
+.hidden .tile-005 .path-005,
+.hidden .tile-006 .path-006,
+.hidden .tile-007 .path-007,
+.hidden .tile-008 .path-008,
+.hidden .tile-009 .path-009,
+.hidden .tile-010 .path-010,
+.hidden .tile-011 .path-011,
+.hidden .tile-012 .path-012,
+.hidden .tile-013 .path-013,
+.hidden .tile-014 .path-014,
+.hidden .tile-015 .path-015 {
+  display:none;
+}*/
+
+.tile-001 .path-001,
+.tile-002 .path-002,
+.tile-003 .path-003,
+.tile-004 .path-004,
+.tile-005 .path-005,
+.tile-006 .path-006,
+.tile-007 .path-007,
+.tile-008 .path-008,
+.tile-009 .path-009,
+.tile-010 .path-010,
+.tile-011 .path-011,
+.tile-012 .path-012,
+.tile-013 .path-013,
+.tile-014 .path-014,
+.tile-015 .path-015 {
+  display:block;
 }
