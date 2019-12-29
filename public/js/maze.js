@@ -54,16 +54,10 @@ function stopMoving(ev) {
         );
         console.log('  just removed class-=entering');
     } else if (oldClass.includes('leaving')) {
-
-        var newhome;
-        if (oldClass.includes('north')) newhome = 'south';
-        if (oldClass.includes('south')) newhome = 'north';
-        if (oldClass.includes('east')) newhome = 'west';
-        if (oldClass.includes('west')) newhome = 'east';
-        
-        tileEl.setAttribute('class','map-tile ' + newhome);
-
-        return;
+        tileEl.setAttribute('class', 
+            oldClass.replace('leaving','').trim()
+        );
+        console.log('  just removed class-=leaving');
     } 
 }
 
@@ -81,8 +75,9 @@ for ( let tile of tiles) {
 function move(direction) {
     targets = document.getElementsByClassName(direction);
     currents = document.getElementsByClassName('current');
+    recycles = document.getElementsByClassName(backcoords[direction]);
 
-    if (targets.length != 1 || currents.length != 1) {
+    if (targets.length != 1 || currents.length != 1 || recycles.length != 1) {
         console.log('something went wrong in move. Either too many or not enough tiles');
         return 0;
     };
@@ -98,16 +93,19 @@ function move(direction) {
     }
 
     current = currents[0];
-    target = targets[0];//.cloneNode(true);
-    //document.body.appendChild(target);
+    target = targets[0];
+    recycle = recycles[0];
     
     target.addEventListener(transitionEnd, stopMoving, false);
     current.addEventListener(transitionEnd, stopMoving, false);
 
     target.setAttribute('class','map-tile current entering');
     console.log('started moving - map-tile current entering');
+    
     current.setAttribute('class','map-tile leaving ' + backcoords[direction]);
     console.log('start moving - map-tile leaving ' + backcoords[direction]);
+
+    recycle.setAttribute('class', 'map-tile ' + direction);
 }
 
 document.addEventListener('keydown', logKey);
