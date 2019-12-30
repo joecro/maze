@@ -210,6 +210,17 @@ function recalcCoords() {
 // listen for user to hit a direction key
 document.addEventListener('keydown', logKey);
 
+document.addEventListener('mousedown', lock, false);
+document.addEventListener('touchstart', lock, false);
+
+// no fancy drag behaviour yet
+//document.addEventListener('mousemove', drag, false);
+//document.addEventListener('touchmove', drag, false);
+
+document.addEventListener('mouseup', detectMove, false);
+document.addEventListener('touchend', detectMove, false);
+
+
 // try to move in the indicated direction
 function logKey(e) {
     switch (e.code) {
@@ -231,6 +242,59 @@ function logKey(e) {
             break;
     }
 }
+
+/**
+ * Thank you @thebabydino https://codepen.io/thebabydino/pen/PRWqMg/
+ * @param {} e 
+ */
+var x0 = null, locked = false;
+
+function unify(e) {	return e.changedTouches ? e.changedTouches[0] : e };
+
+// get the starting coords and lock the screen
+function lock(e) {
+    let unifiedEvent = unify(e);
+    x0 = unifiedEvent.clientX;
+    y0 = unifiedEvent.clientY;
+	locked = true
+};
+
+function detectDrag(e) {
+  e.preventDefault();
+	
+  if(locked) {
+    let dx = unify(e).clientX - x0, f = +(dx/w).toFixed(2);
+  }
+};
+
+// work out which way the swipe went and move that way
+function detectMove(e) {
+  if(locked) {
+    let unifiedEvent = unify(e);
+    let dx = unifiedEvent.clientX - x0, 
+        sx = Math.sign(dx),
+        absX = dx*sx;
+
+    let dy = unifiedEvent.clientY - y0, 
+        sy = Math.sign(dy),
+        absY = dy*sy;
+    
+    if (absY/absX < 1.2 && absX/absY < 1.2) {
+        return("no clear direction");
+    } else if (absX/absY > 1) {
+        // this was a horizontal move
+        return (sx > 0) ? canIMoveWest() : canIMoveEast()
+    } else if (absY/absX > 1) {
+        // this was a vertical move
+        return (sy > 0) ? canIMoveNorth() : canIMoveSouth();
+    }
+    
+
+    x0 = null;
+    locked = false;
+  }
+};
+
 
 /**
  * Get the tile number for the current tile.  eg to see which direction/s we can move
