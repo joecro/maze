@@ -29,15 +29,6 @@ var transitionEnd = whichTransitionEvent();
 
 
 
-function resetTileTo(tileEl, direction) {
-    let od = backcoords[direction];
-    var oc = tileElement.getAttribute('class');
-
-    tileElement.setAttribute('class', 'hidden');
-    tileElement.setAttribute('class', oc.replace(od, direction));
-}
-
-
 /**
  * Remove 'moving' class from a tile element
  * @param ev 
@@ -127,17 +118,22 @@ function move(direction) {
     target.addEventListener(transitionEnd, stopMoving, false);
     current.addEventListener(transitionEnd, stopMoving, false);
 
+    // move the new tile into position
     target.setAttribute('class','map-tile current entering');
     console.log('started moving - map-tile current entering');
     
+    // move the old tile out - it will stay in that direction
     current.setAttribute('class','map-tile leaving ' + backcoords[direction]);
     console.log('start moving - map-tile leaving ' + backcoords[direction]);
 
+    // grab a tile that just went out of reach and recycle it
     recycle.setAttribute('class', 'map-tile ' + direction);
 }
 
+// listen for user to hit a direction key
 document.addEventListener('keydown', logKey);
 
+// try to move in the indicated direction
 function logKey(e) {
     switch (e.code) {
         case 'ArrowUp':
@@ -156,7 +152,7 @@ function logKey(e) {
         case 'KeyJ':
             canIMoveWest();
             break;
-  }
+    }
 }
 
 /**
