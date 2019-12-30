@@ -10,7 +10,6 @@ a {
 }
   
 .map-tile {
-    background-color: $map-color-bg;
     
     min-height: 100vh;
     min-width: 100vw;
@@ -48,12 +47,19 @@ a {
         transform: translate(-100%,-50%);
     }
   
-    > svg > path {
+    > svg {
+        @media (max-aspect-ratio: 1/1) {
+            height:100vh;
+        }
+        background-color: $map-color-bg;
+
+        > path {
         fill: $map-color-path;
         stroke: $map-color-path;
         stroke-width: 0.1;
         stroke-linejoin: round;
         display:none;
+        }
     }
 }
 

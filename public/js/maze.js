@@ -182,7 +182,7 @@ function recalcCoords() {
     try {
         southSVG.setAttribute('class', map[currentX][1*currentY + 1]);
     } catch (error) {
-        console.log('error setting southSVG class to map[' + currentX + '][' + currentY+1 +']')
+        console.log('error setting southSVG class to map[' + currentX + '][' + (1*currentY + 1) +']')
         southSVG.setAttribute('class', 'tile-000');
     }
 
@@ -192,7 +192,7 @@ function recalcCoords() {
     try {
         eastSVG.setAttribute('class', map[1*currentX + 1][currentY]);
     } catch (error) {
-        console.log('error setting eastSVG class to map[' + currentX+1 + '][' + currentY +']')
+        console.log('error setting eastSVG class to map[' + (1*currentX + 1) + '][' + currentY +']')
         eastSVG.setAttribute('class', 'tile-000');
     }
 
@@ -202,27 +202,28 @@ function recalcCoords() {
     try {
         westSVG.setAttribute('class', map[currentX - 1][currentY]);
     } catch (error) {
-        console.log('error setting westSVG class to map[' + currentX-1 + '][' + currentY +']')
+        console.log('error setting westSVG class to map[' + (currentX - 1) + '][' + currentY +']')
         westSVG.setAttribute('class', 'tile-000');
     }
 }
 
 // listen for user to hit a direction key
-document.addEventListener('keydown', logKey);
+document.addEventListener('keydown', logKey, {passive:false});
 
-document.addEventListener('mousedown', lock, false);
-document.addEventListener('touchstart', lock, false);
+document.addEventListener('mousedown', lock);
+document.addEventListener('touchstart', lock, {passive:false});
 
-// no fancy drag behaviour yet
-//document.addEventListener('mousemove', drag, false);
-//document.addEventListener('touchmove', drag, false);
+// just prevents default swipe behaviour
+document.addEventListener('mousemove', detectDrag);
+document.addEventListener('touchmove', detectDrag, {passive:false});
 
-document.addEventListener('mouseup', detectMove, false);
-document.addEventListener('touchend', detectMove, false);
+document.addEventListener('mouseup', detectMove);
+document.addEventListener('touchend', detectMove, {passive:false});
 
 
 // try to move in the indicated direction
 function logKey(e) {
+    e.preventDefault();
     switch (e.code) {
         case 'ArrowUp':
         case 'KeyI':
@@ -253,6 +254,7 @@ function unify(e) {	return e.changedTouches ? e.changedTouches[0] : e };
 
 // get the starting coords and lock the screen
 function lock(e) {
+    e.preventDefault();
     let unifiedEvent = unify(e);
     x0 = unifiedEvent.clientX;
     y0 = unifiedEvent.clientY;
@@ -261,10 +263,6 @@ function lock(e) {
 
 function detectDrag(e) {
   e.preventDefault();
-	
-  if(locked) {
-    let dx = unify(e).clientX - x0, f = +(dx/w).toFixed(2);
-  }
 };
 
 // work out which way the swipe went and move that way
