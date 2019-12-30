@@ -1,8 +1,15 @@
 var backcoords = {};
-backcoords['north'] = 'south';
-backcoords['south'] = 'north';
-backcoords['east'] = 'west';
-backcoords['west'] = 'east';
+    backcoords['north'] = 'south';
+    backcoords['south'] = 'north';
+    backcoords['east'] = 'west';
+    backcoords['west'] = 'east';
+
+let map = {
+    0: {0:'tile-010',1:'tile-003',2:'tile-010',3:'tile-001'},
+    1: {0:'tile-014',1:'tile-015',2:'tile-013',3:'tile-003'},
+    2: {0:'tile-006',1:'tile-012',2:'tile-011',3:'tile-007'},
+    3: {0:'tile-012',1:'tile-001',2:'tile-012',3:'tile-005'},
+}
 
 /**
  * Thank you SO https://stackoverflow.com/questions/15617970/wait-for-css-transition#15618028
@@ -24,7 +31,7 @@ function whichTransitionEvent(){
     }
 }
 
-//
+// browser-specific transitionEnd event
 var transitionEnd = whichTransitionEvent();
 
 
@@ -44,6 +51,7 @@ function stopMoving(ev) {
             oldClass.replace('entering','').trim()
         );
         console.log('  just removed class-=entering');
+        recalcCoords();
     } else if (oldClass.includes('leaving')) {
         tileEl.setAttribute('class', 
             oldClass.replace('leaving','').trim()
@@ -128,6 +136,75 @@ function move(direction) {
 
     // grab a tile that just went out of reach and recycle it
     recycle.setAttribute('class', 'map-tile ' + direction);
+
+}
+
+/**
+ * 
+ */
+function recalcCoords() {
+    let currents = document.getElementsByClassName('map-tile current');
+    let norths = document.getElementsByClassName('map-tile north');
+    let souths = document.getElementsByClassName('map-tile south');
+    let easts = document.getElementsByClassName('map-tile east');
+    let wests = document.getElementsByClassName('map-tile west');
+    
+    if (currents.length != 1 || norths.length != 1 || souths.length != 1 || wests.length != 1 || easts.length != 1 ) {
+        console.log('something went wrong in recalcCoords. Either too many or not enough tiles');
+        return 0;
+    };
+
+    let current = currents[0];
+    let north = norths[0], northSVG = north.children[0];
+    let south = souths[0], southSVG = south.children[0];
+    let east = easts[0], eastSVG = east.children[0];
+    let west = wests[0], westSVG = west.children[0];
+
+    // get current coords from current tile
+    let currentX = current.getAttribute('data-x-coord');
+    let currentY = current.getAttribute('data-y-coord');
+
+    console.log('currrent coords are: X = ' + currentX + ', Y = ' + currentY);
+
+    north.setAttribute('data-x-coord', currentX);
+    north.setAttribute('data-y-coord', currentY - 1);
+
+    try {
+        northSVG.setAttribute('class', map[currentX][currentY - 1]);
+    } catch (error) {
+        console.log('error setting northSVG class to map[' + currentX + '][' + currentY-1 + ']')
+        northSVG.setAttribute('class', 'tile-000');
+    }
+
+    south.setAttribute('data-x-coord', currentX);
+    south.setAttribute('data-y-coord', 1*currentY + 1);
+
+    try {
+        southSVG.setAttribute('class', map[currentX][1*currentY + 1]);
+    } catch (error) {
+        console.log('error setting southSVG class to map[' + currentX + '][' + currentY+1 +']')
+        southSVG.setAttribute('class', 'tile-000');
+    }
+
+    east.setAttribute('data-x-coord', 1*currentX + 1);
+    east.setAttribute('data-y-coord', currentY);
+
+    try {
+        eastSVG.setAttribute('class', map[1*currentX + 1][currentY]);
+    } catch (error) {
+        console.log('error setting eastSVG class to map[' + currentX+1 + '][' + currentY +']')
+        eastSVG.setAttribute('class', 'tile-000');
+    }
+
+    west.setAttribute('data-x-coord', currentX - 1);
+    west.setAttribute('data-y-coord', currentY);
+
+    try {
+        westSVG.setAttribute('class', map[currentX - 1][currentY]);
+    } catch (error) {
+        console.log('error setting westSVG class to map[' + currentX-1 + '][' + currentY +']')
+        westSVG.setAttribute('class', 'tile-000');
+    }
 }
 
 // listen for user to hit a direction key

@@ -6,31 +6,31 @@
     <script type='text/javascript' src='/js/maze.js'></script>
   </head>
   <body>
-    <div class="map-tile current">
-      <svg class="tile-015" viewBox="0 0 50 50">
-          {% block tilepaths %}{% endblock %}
-      </svg>
-    </div>
-
-    <div class="map-tile north">
+    <div class="map-tile current" data-x-coord=0 data-y-coord=0>
       <svg class="tile-010" viewBox="0 0 50 50">
           {% block tilepaths %}{% endblock %}
       </svg>
     </div>
 
-    <div class="map-tile south">
+    <div class="map-tile north" data-x-coord=0 data-y-coord=0>
+      <svg class="tile-010" viewBox="0 0 50 50">
+          {% block tilepaths %}{% endblock %}
+      </svg>
+    </div>
+
+    <div class="map-tile south" data-x-coord=0 data-y-coord=0>
       <svg class="tile-003" viewBox="0 0 50 50">
           {% block tilepaths %}{% endblock %}
       </svg>
     </div>
 
-    <div class="map-tile east">
-      <svg class="tile-006" viewBox="0 0 50 50">
+    <div class="map-tile east" data-x-coord=0 data-y-coord=0>
+      <svg class="tile-014" viewBox="0 0 50 50">
           {% block tilepaths %}{% endblock %}
       </svg>
     </div>
 
-    <div class="map-tile west">
+    <div class="map-tile west" data-x-coord=0 data-y-coord=0>
       <svg class="tile-010" viewBox="0 0 50 50">
           {% block tilepaths %}{% endblock %}
       </svg>
