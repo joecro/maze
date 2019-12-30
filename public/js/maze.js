@@ -5,10 +5,12 @@ var backcoords = {};
     backcoords['west'] = 'east';
 
 let map = {
-    0: {0:'tile-010',1:'tile-003',2:'tile-010',3:'tile-001'},
-    1: {0:'tile-014',1:'tile-015',2:'tile-013',3:'tile-003'},
-    2: {0:'tile-006',1:'tile-012',2:'tile-011',3:'tile-007'},
-    3: {0:'tile-012',1:'tile-001',2:'tile-012',3:'tile-005'},
+    0: {0:'tile-010',1:'tile-003',2:'tile-008',3:'tile-003',4:'tile-010',5:'tile-003'},
+    1: {0:'tile-012',1:'tile-013',2:'tile-011',3:'tile-013',4:'tile-005',5:'tile-006'},
+    2: {0:'tile-002',1:'tile-010',2:'tile-005',3:'tile-010',4:'tile-003',5:'tile-006'},
+    3: {0:'tile-014',1:'tile-015',2:'tile-009',3:'tile-013',4:'tile-013',5:'tile-007'},
+    4: {0:'tile-006',1:'tile-012',2:'tile-003',3:'tile-010',4:'tile-001',5:'tile-006'},
+    5: {0:'tile-012',1:'tile-009',2:'tile-005',3:'tile-012',4:'tile-009',5:'tile-005'},
 }
 
 /**
@@ -44,28 +46,25 @@ function stopMoving(ev) {
     let tileEl = ev.target;
     let oldClass = tileEl.getAttribute('class');
 
-    console.log(' stopMoving: ' + oldClass);
+    //console.log(' stopMoving: ' + oldClass);
 
     if (oldClass.includes('entering')) { 
         tileEl.setAttribute('class', 
             oldClass.replace('entering','').trim()
         );
-        console.log('  just removed class-=entering');
+        //console.log('  just removed class-=entering');
+
+        // wait until the new tile is in place before calculating new coords & tiles
         recalcCoords();
+        locked = false;
     } else if (oldClass.includes('leaving')) {
         tileEl.setAttribute('class', 
             oldClass.replace('leaving','').trim()
         );
-        console.log('  just removed class-=leaving');
+        //console.log('  just removed class-=leaving');
     } 
 }
 
-
-
-var tiles = document.getElementsByClassName('map-tile');
-for ( let tile of tiles) {
-    tile.addEventListener(transitionEnd, stopMoving, false)
-};
 
 
 function hideBorderBump(ev) {
@@ -73,6 +72,8 @@ function hideBorderBump(ev) {
     let bumpClass = borderElement.getAttribute('class');
 
     borderElement.setAttribute('class', bumpClass.replace('bump','').trim());
+    
+    locked = false;
 }
 
 /**
@@ -136,7 +137,6 @@ function move(direction) {
 
     // grab a tile that just went out of reach and recycle it
     recycle.setAttribute('class', 'map-tile ' + direction);
-
 }
 
 /**
@@ -223,7 +223,10 @@ document.addEventListener('touchend', detectMove, {passive:false});
 
 // try to move in the indicated direction
 function logKey(e) {
+    if (locked) return 0;
+
     e.preventDefault();
+	locked = true;  // will be unlocked after new coords calculate
     switch (e.code) {
         case 'ArrowUp':
         case 'KeyI':
@@ -258,7 +261,7 @@ function lock(e) {
     let unifiedEvent = unify(e);
     x0 = unifiedEvent.clientX;
     y0 = unifiedEvent.clientY;
-	locked = true
+	//locked = true;
 };
 
 function detectDrag(e) {
@@ -267,7 +270,8 @@ function detectDrag(e) {
 
 // work out which way the swipe went and move that way
 function detectMove(e) {
-  if(locked) {
+  if(!locked) {
+    locked = true;
     let unifiedEvent = unify(e);
     let dx = unifiedEvent.clientX - x0, 
         sx = Math.sign(dx),
@@ -287,7 +291,6 @@ function detectMove(e) {
         return (sy > 0) ? canIMoveNorth() : canIMoveSouth();
     }
     
-
     x0 = null;
     locked = false;
   }
