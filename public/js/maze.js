@@ -9,7 +9,7 @@ let map = {
     1: {0:'tile-012',1:'tile-013',2:'tile-011',3:'tile-013',4:'tile-005',5:'tile-006'},
     2: {0:'tile-002',1:'tile-010',2:'tile-005',3:'tile-010',4:'tile-003',5:'tile-006'},
     3: {0:'tile-014',1:'tile-015',2:'tile-009',3:'tile-013',4:'tile-013',5:'tile-007'},
-    4: {0:'tile-006',1:'tile-012',2:'tile-003',3:'tile-010',4:'tile-001',5:'tile-006'},
+    4: {0:'tile-006',1:'tile-012',2:'tile-003',3:'tile-010',4:'tile-016',5:'tile-006'},
     5: {0:'tile-012',1:'tile-009',2:'tile-005',3:'tile-012',4:'tile-009',5:'tile-005'},
 }
 
@@ -225,23 +225,26 @@ document.addEventListener('touchend', detectMove, {passive:false});
 function logKey(e) {
     if (locked) return 0;
 
-    e.preventDefault();
 	locked = true;  // will be unlocked after new coords calculate
     switch (e.code) {
         case 'ArrowUp':
         case 'KeyI':
+            e.preventDefault();
             canIMoveNorth();
             break;
         case 'ArrowDown':
         case 'KeyM':
+            e.preventDefault();
             canIMoveSouth();
             break;
         case 'ArrowRight':
         case 'KeyK':
+            e.preventDefault();
             canIMoveEast();
             break;
         case 'ArrowLeft':
         case 'KeyJ':
+            e.preventDefault();
             canIMoveWest();
             break;
     }
