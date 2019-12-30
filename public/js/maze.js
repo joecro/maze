@@ -261,7 +261,6 @@ function lock(e) {
     let unifiedEvent = unify(e);
     x0 = unifiedEvent.clientX;
     y0 = unifiedEvent.clientY;
-	//locked = true;
 };
 
 function detectDrag(e) {
@@ -282,6 +281,7 @@ function detectMove(e) {
         absY = dy*sy;
     
     if (absY/absX < 1.2 && absX/absY < 1.2) {
+        locked = false;
         return("no clear direction");
     } else if (absX/absY > 1) {
         // this was a horizontal move
