@@ -13,6 +13,40 @@ let map = {
     5: {0:'tile-012',1:'tile-009',2:'tile-005',3:'tile-012',4:'tile-009',5:'tile-005'},
 }
 
+window.onload = function() {
+    initMap();
+    welcome();
+};
+
+/**
+ * any setup that needs doing before user goes running round in the map
+ */
+function initMap() {
+    let startTilePath = 'tile-016';
+    let startTile = document.querySelector('.current.map-tile');
+
+    let startX = 0, startY = 0;
+
+    while (startTilePath == 'tile-016') {  // don't want to start at the finish :/
+        startX = Math.floor(6*Math.random());
+        startY = Math.floor(6*Math.random());
+
+        startTilePath = map[startX][startY];
+    }
+
+    // startTile is the parent div - need to set class on the child svg
+    startTile.children[0].setAttribute('class', startTilePath);
+    startTile.setAttribute('data-x-coord', startX);
+    startTile.setAttribute('data-y-coord', startY);
+    
+    recalcCoords();
+}
+
+
+function welcome() {
+    console.log('TODO - welcome')
+}
+
 /**
  * Thank you SO https://stackoverflow.com/questions/15617970/wait-for-css-transition#15618028
  */
@@ -66,7 +100,10 @@ function stopMoving(ev) {
 }
 
 
-
+/**
+ * Clean up 'bump' border 
+ * @param {Event} ev 
+ */
 function hideBorderBump(ev) {
     let borderElement = ev.target;
     let bumpClass = borderElement.getAttribute('class');
@@ -93,6 +130,9 @@ function bump(direction) {
 
     let currentClass = border.getAttribute('class');
     border.setAttribute('class', currentClass + ' bump');
+    
+    // gap of 50ms is just noticeable
+    window.navigator.vibrate([100,50,60]);
 }
 
 
@@ -140,7 +180,7 @@ function move(direction) {
 }
 
 /**
- * 
+ * After moving, reset the surrounding tiles to the right paths
  */
 function recalcCoords() {
     let currents = document.getElementsByClassName('map-tile current');
