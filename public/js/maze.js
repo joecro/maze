@@ -13,9 +13,12 @@ let map = {
     5: {0:'tile-012',1:'tile-009',2:'tile-005',3:'tile-012',4:'tile-009',5:'tile-005'},
 }
 
+/**
+ * Onload - set up the map and show a welcome message
+ */
 window.onload = function() {
-    initMap();
     welcome();
+    initMap();
 };
 
 /**
@@ -43,8 +46,45 @@ function initMap() {
 }
 
 
+/**
+ * Display welcome message
+ */
 function welcome() {
-    console.log('TODO - welcome')
+
+    let messageHolder = document.querySelector('#message-holder');
+
+    messageHolder.setAttribute('class','shown');
+    document.querySelector('.welcome.message').setAttribute('class','welcome message shown');
+
+    messageHolder.addEventListener('click',hideMessages);
+    messageHolder.addEventListener('touchstart',hideMessages);
+}
+
+
+function finished() {
+       
+    // gap of 50ms is just noticeable
+    window.navigator.vibrate([600,200,150,80,1500]);
+
+    tid = window.setTimeout(showFinishedMessage, 2000);
+}
+
+function showFinishedMessage() {
+    let messageHolder = document.querySelector('#message-holder');
+
+    messageHolder.setAttribute('class','shown');
+    document.querySelector('.finished.message').setAttribute('class','welcome message shown');
+
+    messageHolder.addEventListener('click',initMap);
+    messageHolder.addEventListener('click',hideMessages);
+    messageHolder.addEventListener('touchstart',initMap);
+    messageHolder.addEventListener('touchstart',hideMessages);
+}
+
+function hideMessages() {
+    document.querySelector('#message-holder').setAttribute('class','hidden');
+    document.querySelector('.welcome.message').setAttribute('class','welcome message hidden');
+    document.querySelector('.finished.message').setAttribute('class','finished message hidden');
 }
 
 /**
@@ -244,6 +284,10 @@ function recalcCoords() {
     } catch (error) {
         console.log('error setting westSVG class to map[' + (currentX - 1) + '][' + currentY +']')
         westSVG.setAttribute('class', 'tile-000');
+    }
+
+    if (map[currentX][currentY] == 'tile-016') {  //then you finished. Go you!
+        finished();
     }
 }
 

@@ -2,13 +2,18 @@
 <html>
   <head>
     <title>{{ title }}</title>
+    
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/xolonium" type="text/css"/>
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/gidole-regular" type="text/css"/>
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/orkney" type="text/css"/>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+
     <script type='text/javascript' src='/js/maze.js'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <div class="map-tile current" data-x-coord=0 data-y-coord=0>
-      <svg class="tile-010" viewBox="0 0 100 100">
+      <svg class="tile-016" viewBox="0 0 100 100">
           {% block tilepaths %}{% endblock %}
       </svg>
     </div>
@@ -43,5 +48,23 @@
     <div class="border south-border"></div>
     <div class="border east-border"></div>
     <div class="border west-border"></div>
+
+  
+    <div id="message-holder" class="hidden">
+      <section class="welcome message hidden" role="alert">
+        <h1>Welcome</h1>
+        <p>You have entered a maze.</p>
+        <p>Use arrow keys, or swipe to move around.</p>
+        <button class="gotit">Got it!</button>
+      </section>
+      
+
+      <section class="finished message hidden" role="alert">
+        <h1>Well done</h1>
+        <p>You have completed the maze and earned a warm feeling!</p>
+        <p>Refresh the page to start again, or hit the button below.</p>
+        <button class="reset">Reset</button>
+      </section>
+    </div>
   </body>
 </html>

@@ -1,4 +1,6 @@
 @import "constants";
+@import "typography";
+@import "alerts";
 
 body {
     overflow:hidden;
@@ -8,7 +10,11 @@ body {
 a {
     color: #00B7FF;
 }
-  
+
+.hidden {
+    display: none;
+}
+
 .map-tile {
     
     min-height: 100vh;
