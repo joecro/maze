@@ -11,35 +11,25 @@
     <script type='text/javascript' src='/js/maze.js'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
-  <body>
+  <body tabindex="1">
     <div class="map-tile current" data-x-coord=0 data-y-coord=0>
-      <svg class="tile-016" viewBox="0 0 100 100">
           {% block tilepaths %}{% endblock %}
-      </svg>
     </div>
 
     <div class="map-tile north" data-x-coord=0 data-y-coord=-1>
-      <svg class="tile-000" viewBox="0 0 100 100">
           {% block tilepaths %}{% endblock %}
-      </svg>
     </div>
 
     <div class="map-tile south" data-x-coord=0 data-y-coord=1>
-      <svg class="tile-003" viewBox="0 0 100 100">
           {% block tilepaths %}{% endblock %}
-      </svg>
     </div>
 
     <div class="map-tile east" data-x-coord=1 data-y-coord=0>
-      <svg class="tile-012" viewBox="0 0 100 100">
-          {% block tilepaths %}{% endblock %}
-      </svg>
+          {% block tilepaths %}{% endblock %}    
     </div>
 
     <div class="map-tile west" data-x-coord=-1 data-y-coord=0>
-      <svg class="tile-000" viewBox="0 0 100 100">
           {% block tilepaths %}{% endblock %}
-      </svg>
     </div>
 
     {% block body %}{% endblock %}

@@ -35,10 +35,18 @@
     }
 
     button {
+        cursor: pointer;
+        
         font-size: 1.8rem;
         padding: 0.5rem 1.5rem;
-        border-radius: 0.5rem;
 
+        border-radius: 0.5rem;
         border: 1px solid gray;
+
+        margin-top: 0.8rem;
+
+        &:hover {
+            background-color: lightgray;
+        }
     }
 }

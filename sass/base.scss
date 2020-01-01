@@ -5,6 +5,7 @@
 body {
     overflow:hidden;
     margin:0;
+    background-color: $map-color-bg;
 }
   
 a {
@@ -55,7 +56,7 @@ a {
   
     > svg {
         @media (max-aspect-ratio: 1/1) {
-            height:100vh;
+            height:101vh;
         }
         &.tile-016 {
             max-width: 100vw;

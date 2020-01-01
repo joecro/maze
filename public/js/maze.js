@@ -18,7 +18,6 @@ let map = {
  */
 window.onload = function() {
     welcome();
-    initMap();
 };
 
 /**
@@ -26,7 +25,7 @@ window.onload = function() {
  */
 function initMap() {
     let startTilePath = 'tile-016';
-    let startTile = document.querySelector('.current.map-tile');
+    let startTile = document.querySelector('.south.map-tile');
 
     let startX = 0, startY = 0;
 
@@ -42,7 +41,9 @@ function initMap() {
     startTile.setAttribute('data-x-coord', startX);
     startTile.setAttribute('data-y-coord', startY);
     
-    recalcCoords();
+    move('south');
+
+    document.body.focus();
 }
 
 
@@ -56,16 +57,21 @@ function welcome() {
     messageHolder.setAttribute('class','shown');
     document.querySelector('.welcome.message').setAttribute('class','welcome message shown');
 
+    messageHolder.addEventListener('click',initMap);
+    messageHolder.addEventListener('touchstart',initMap);
     messageHolder.addEventListener('click',hideMessages);
     messageHolder.addEventListener('touchstart',hideMessages);
 }
 
 
 function finished() {
-       
-    // gap of 50ms is just noticeable
-    window.navigator.vibrate([600,200,150,80,1500]);
-
+    
+    try {
+        // gap of 50ms is just noticeable
+        window.navigator.vibrate([600,200,150,80,1500]);
+    } catch (error) {
+        console.log("Edge doesn't ignore vibrate");
+    }
     tid = window.setTimeout(showFinishedMessage, 2000);
 }
 
@@ -170,9 +176,13 @@ function bump(direction) {
 
     let currentClass = border.getAttribute('class');
     border.setAttribute('class', currentClass + ' bump');
-    
-    // gap of 50ms is just noticeable
-    window.navigator.vibrate([100,50,60]);
+
+    try {   
+        // gap of 50ms is just noticeable
+        window.navigator.vibrate([100,50,60]);
+    } catch (error) {
+        console.log("Edge doesn't ignore vibrate");
+    }
 }
 
 
@@ -309,8 +319,11 @@ document.addEventListener('touchend', detectMove, {passive:false});
 function logKey(e) {
     if (locked) return 0;
 
-	locked = true;  // will be unlocked after new coords calculate
-    switch (e.code) {
+    locked = true;  // will be unlocked after new coords calculate
+    
+    let input = (e.code || e.key);
+
+    switch (input) {
         case 'ArrowUp':
         case 'KeyI':
             e.preventDefault();
