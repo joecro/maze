@@ -1,24 +1,17 @@
-var backcoords = {};
-    backcoords['north'] = 'south';
-    backcoords['south'] = 'north';
-    backcoords['east'] = 'west';
-    backcoords['west'] = 'east';
-
-let map = {
-    0: {0:'tile-010',1:'tile-003',2:'tile-008',3:'tile-003',4:'tile-010',5:'tile-003'},
-    1: {0:'tile-012',1:'tile-013',2:'tile-011',3:'tile-013',4:'tile-005',5:'tile-006'},
-    2: {0:'tile-002',1:'tile-010',2:'tile-005',3:'tile-010',4:'tile-003',5:'tile-006'},
-    3: {0:'tile-014',1:'tile-015',2:'tile-009',3:'tile-013',4:'tile-013',5:'tile-007'},
-    4: {0:'tile-006',1:'tile-012',2:'tile-003',3:'tile-010',4:'tile-016',5:'tile-006'},
-    5: {0:'tile-012',1:'tile-009',2:'tile-005',3:'tile-012',4:'tile-009',5:'tile-005'},
-}
+import transitionEnd from './browser-specific.js';
+import map from './map.js';
+import { showFinishedMessage } from './messages.js';
 
 /**
- * Onload - set up the map and show a welcome message
+ * hey buddy, watch my six.
  */
-window.onload = function() {
-    window.setTimeout(welcome, 1000);
-};
+let backcoords = {};
+backcoords['north'] = 'south';
+backcoords['south'] = 'north';
+backcoords['east'] = 'west';
+backcoords['west'] = 'east';
+
+var mazeLocked = false;
 
 /**
  * any setup that needs doing before user goes running round in the map
@@ -30,8 +23,8 @@ function initMap() {
     let startX = 0, startY = 0;
 
     while (startTilePath == 'tile-016') {  // don't want to start at the finish :/
-        startX = Math.floor(6*Math.random());
-        startY = Math.floor(6*Math.random());
+        startX = Math.floor(6 * Math.random());
+        startY = Math.floor(6 * Math.random());
 
         startTilePath = map[startX][startY];
     }
@@ -40,7 +33,7 @@ function initMap() {
     startTile.children[0].setAttribute('class', startTilePath);
     startTile.setAttribute('data-x-coord', startX);
     startTile.setAttribute('data-y-coord', startY);
-    
+
     move('south');
 
     document.body.focus();
@@ -48,83 +41,19 @@ function initMap() {
 
 
 /**
- * Display welcome message
- */
-function welcome() {
-
-    let messageHolder = document.querySelector('#message-holder');
-    let gotit = document.querySelector('.welcome.message button');
-
-    messageHolder.setAttribute('class','shown');
-    document.querySelector('.welcome.message').setAttribute('class','welcome message shown');
-
-    gotit.addEventListener('click',initMap);
-    gotit.addEventListener('touchstart',initMap);
-    gotit.addEventListener('click',hideMessages);
-    gotit.addEventListener('touchstart',hideMessages);
-}
-
-/**
- * Well done you! you reached the end a nd won a warm feeling
- */
+* Well done you! you reached the end and won a warm feeling
+*/
 function finished() {
-    
+
     try {
         // gap of 50ms is just noticeable
-        window.navigator.vibrate([600,200,150,80,1200]);
+        window.navigator.vibrate([600, 200, 150, 80, 1200]);
     } catch (error) {
         console.log("Edge doesn't ignore vibrate");
     }
-    tid = window.setTimeout(showFinishedMessage, 2000);
+
+    let tid = window.setTimeout(showFinishedMessage, 2000);
 }
-
-function showFinishedMessage() {
-    let messageHolder = document.querySelector('#message-holder');
-    let resetButton = document.querySelector('.finished.message button');
-
-    messageHolder.setAttribute('class','shown');
-    document.querySelector('.finished.message').setAttribute('class','welcome message shown');
-
-    resetButton.addEventListener('click',initMap);
-    resetButton.addEventListener('click',hideMessages);
-    resetButton.addEventListener('touchstart',initMap);
-    resetButton.addEventListener('touchstart',hideMessages);
-}
-
-/**
- * hide message-holder and all messages
- */
-function hideMessages() {
-    document.querySelector('#message-holder').setAttribute('class','hidden');
-    document.querySelector('.welcome.message').setAttribute('class','welcome message hidden');
-    document.querySelector('.finished.message').setAttribute('class','finished message hidden');
-}
-
-
-/**
- * Thank you SO https://stackoverflow.com/questions/15617970/wait-for-css-transition#15618028
- */
-function whichTransitionEvent(){
-    var t;
-    var el = document.createElement('fakeelement');
-    var transitions = {
-      'transition':'transitionend',
-      'OTransition':'oTransitionEnd',
-      'MozTransition':'transitionend',
-      'WebkitTransition':'webkitTransitionEnd'
-    }
-
-    for(t in transitions){
-        if( el.style[t] !== undefined ){
-            return transitions[t];
-        }
-    }
-}
-
-// browser-specific transitionEnd event
-var transitionEnd = whichTransitionEvent();
-
-
 
 /**
  * Remove 'moving' class from a tile element
@@ -134,25 +63,51 @@ function stopMoving(ev) {
     let tileEl = ev.target;
     let oldClass = tileEl.getAttribute('class');
 
-    //console.log(' stopMoving: ' + oldClass);
+    console.log(' stopMoving: ' + oldClass);
 
-    if (oldClass.includes('entering')) { 
-        tileEl.setAttribute('class', 
-            oldClass.replace('entering','').trim()
+    if (oldClass.includes('entering')) {
+        tileEl.setAttribute('class',
+            oldClass.replace('entering', '').trim()
         );
-        //console.log('  just removed class-=entering');
+        console.log('  just removed class-=entering');
 
         // wait until the new tile is in place before calculating new coords & tiles
         recalcCoords();
-        locked = false;
+        mazeLocked = false;
     } else if (oldClass.includes('leaving')) {
-        tileEl.setAttribute('class', 
-            oldClass.replace('leaving','').trim()
+        tileEl.setAttribute('class',
+            oldClass.replace('leaving', '').trim()
         );
-        //console.log('  just removed class-=leaving');
-    } 
+        console.log('  just removed class-=leaving');
+    }
 }
 
+
+/**
+ * User tried an illegal move.  Bump shows they can't go that way
+ * @param {String} direction 
+ */
+function bump(direction) {
+    let borders = document.getElementsByClassName(direction + '-border');
+
+    if (borders.length != 1) {
+        console.log('something went wrong in move. Either too many or not enough borders');
+        return 0;
+    };
+
+    let border = borders[0];
+    border.addEventListener(transitionEnd, hideBorderBump, false);
+
+    let currentClass = border.getAttribute('class');
+    border.setAttribute('class', currentClass + ' bump');
+
+    try {
+        // gap of 50ms is just noticeable
+        window.navigator.vibrate([100, 50, 60]);
+    } catch (error) {
+        console.log("Edge doesn't ignore vibrate");
+    }
+}
 
 /**
  * Clean up 'bump' border 
@@ -162,35 +117,9 @@ function hideBorderBump(ev) {
     let borderElement = ev.target;
     let bumpClass = borderElement.getAttribute('class');
 
-    borderElement.setAttribute('class', bumpClass.replace('bump','').trim());
-    
-    locked = false;
-}
+    borderElement.setAttribute('class', bumpClass.replace('bump', '').trim());
 
-/**
- * User tried an illegal move.  Bump shows they can't go that way
- * @param {String} direction 
- */
-function bump(direction) {
-    let borders = document.getElementsByClassName(direction + '-border');
-   
-    if (borders.length != 1) {
-        console.log('something went wrong in move. Either too many or not enough borders');
-        return 0;
-    }; 
-
-    border = borders[0];
-    border.addEventListener(transitionEnd, hideBorderBump, false);
-
-    let currentClass = border.getAttribute('class');
-    border.setAttribute('class', currentClass + ' bump');
-
-    try {   
-        // gap of 50ms is just noticeable
-        window.navigator.vibrate([100,50,60]);
-    } catch (error) {
-        console.log("Edge doesn't ignore vibrate");
-    }
+    mazeLocked = false;
 }
 
 
@@ -199,42 +128,46 @@ function bump(direction) {
  * @param {} direction 
  */
 function move(direction) {
-    targets = document.getElementsByClassName(direction);
-    currents = document.getElementsByClassName('current');
-    recycles = document.getElementsByClassName(backcoords[direction]);
+    if (!mazeLocked) {
+        mazeLocked = true;
 
-    if (targets.length != 1 || currents.length != 1 || recycles.length != 1) {
-        console.log('something went wrong in move. Either too many or not enough tiles');
-        return 0;
-    };
+        let targets = document.getElementsByClassName(direction);
+        let currents = document.getElementsByClassName('current');
+        let recycles = document.getElementsByClassName(backcoords[direction]);
 
-    if (targets[0].getAttribute('class').includes('entering')) {
-        console.log('Target tile was still moving');
-        return 0;
+        if (targets.length != 1 || currents.length != 1 || recycles.length != 1) {
+            console.log('something went wrong in move. Either too many or not enough tiles');
+            return 0;
+        };
+
+        if (targets[0].getAttribute('class').includes('entering')) {
+            console.log('Target tile was still moving');
+            return 0;
+        }
+
+        if (currents[0].getAttribute('class').includes('leaving')) {
+            console.log('Current tile was still moving');
+            return 0;
+        }
+
+        let current = currents[0];
+        let target = targets[0];
+        let recycle = recycles[0];
+
+        target.addEventListener(transitionEnd, stopMoving, false);
+        current.addEventListener(transitionEnd, stopMoving, false);
+
+        // move the new tile into position
+        target.setAttribute('class', 'map-tile current entering');
+        console.log('started moving - map-tile current entering');
+
+        // move the old tile out - it will stay in that direction
+        current.setAttribute('class', 'map-tile leaving ' + backcoords[direction]);
+        console.log('start moving - map-tile leaving ' + backcoords[direction]);
+
+        // grab a tile that just went out of reach and recycle it
+        recycle.setAttribute('class', 'map-tile ' + direction);
     }
-
-    if (currents[0].getAttribute('class').includes('leaving')) {
-        console.log('Current tile was still moving');
-        return 0;
-    }
-
-    current = currents[0];
-    target = targets[0];
-    recycle = recycles[0];
-    
-    target.addEventListener(transitionEnd, stopMoving, false);
-    current.addEventListener(transitionEnd, stopMoving, false);
-
-    // move the new tile into position
-    target.setAttribute('class','map-tile current entering');
-    console.log('started moving - map-tile current entering');
-    
-    // move the old tile out - it will stay in that direction
-    current.setAttribute('class','map-tile leaving ' + backcoords[direction]);
-    console.log('start moving - map-tile leaving ' + backcoords[direction]);
-
-    // grab a tile that just went out of reach and recycle it
-    recycle.setAttribute('class', 'map-tile ' + direction);
 }
 
 /**
@@ -246,8 +179,8 @@ function recalcCoords() {
     let souths = document.getElementsByClassName('map-tile south');
     let easts = document.getElementsByClassName('map-tile east');
     let wests = document.getElementsByClassName('map-tile west');
-    
-    if (currents.length != 1 || norths.length != 1 || souths.length != 1 || wests.length != 1 || easts.length != 1 ) {
+
+    if (currents.length != 1 || norths.length != 1 || souths.length != 1 || wests.length != 1 || easts.length != 1) {
         console.log('something went wrong in recalcCoords. Either too many or not enough tiles');
         return 0;
     };
@@ -270,27 +203,27 @@ function recalcCoords() {
     try {
         northSVG.setAttribute('class', map[currentX][currentY - 1]);
     } catch (error) {
-        console.log('error setting northSVG class to map[' + currentX + '][' + currentY-1 + ']')
+        console.log('error setting northSVG class to map[' + currentX + '][' + currentY - 1 + ']')
         northSVG.setAttribute('class', 'tile-000');
     }
 
     south.setAttribute('data-x-coord', currentX);
-    south.setAttribute('data-y-coord', 1*currentY + 1);
+    south.setAttribute('data-y-coord', 1 * currentY + 1);
 
     try {
-        southSVG.setAttribute('class', map[currentX][1*currentY + 1]);
+        southSVG.setAttribute('class', map[currentX][1 * currentY + 1]);
     } catch (error) {
-        console.log('error setting southSVG class to map[' + currentX + '][' + (1*currentY + 1) +']')
+        console.log('error setting southSVG class to map[' + currentX + '][' + (1 * currentY + 1) + ']')
         southSVG.setAttribute('class', 'tile-000');
     }
 
-    east.setAttribute('data-x-coord', 1*currentX + 1);
+    east.setAttribute('data-x-coord', 1 * currentX + 1);
     east.setAttribute('data-y-coord', currentY);
 
     try {
-        eastSVG.setAttribute('class', map[1*currentX + 1][currentY]);
+        eastSVG.setAttribute('class', map[1 * currentX + 1][currentY]);
     } catch (error) {
-        console.log('error setting eastSVG class to map[' + (1*currentX + 1) + '][' + currentY +']')
+        console.log('error setting eastSVG class to map[' + (1 * currentX + 1) + '][' + currentY + ']')
         eastSVG.setAttribute('class', 'tile-000');
     }
 
@@ -300,7 +233,7 @@ function recalcCoords() {
     try {
         westSVG.setAttribute('class', map[currentX - 1][currentY]);
     } catch (error) {
-        console.log('error setting westSVG class to map[' + (currentX - 1) + '][' + currentY +']')
+        console.log('error setting westSVG class to map[' + (currentX - 1) + '][' + currentY + ']')
         westSVG.setAttribute('class', 'tile-000');
     }
 
@@ -309,108 +242,13 @@ function recalcCoords() {
     }
 }
 
-// listen for user to hit a direction key
-document.addEventListener('keydown', logKey, {passive:false});
-
-document.addEventListener('mousedown', lock);
-document.addEventListener('touchstart', lock, {passive:false});
-
-// just prevents default swipe behaviour
-document.addEventListener('mousemove', detectDrag);
-document.addEventListener('touchmove', detectDrag, {passive:false});
-
-document.addEventListener('mouseup', detectMove);
-document.addEventListener('touchend', detectMove, {passive:false});
-
-
-// try to move in the indicated direction
-function logKey(e) {
-    if (locked) return 0;
-
-    locked = true;  // will be unlocked after new coords calculate
-    
-    let input = (e.code || e.key);
-
-    switch (input) {
-        case 'ArrowUp':
-        case 'KeyI':
-            e.preventDefault();
-            canIMoveNorth();
-            break;
-        case 'ArrowDown':
-        case 'KeyM':
-            e.preventDefault();
-            canIMoveSouth();
-            break;
-        case 'ArrowRight':
-        case 'KeyK':
-            e.preventDefault();
-            canIMoveEast();
-            break;
-        case 'ArrowLeft':
-        case 'KeyJ':
-            e.preventDefault();
-            canIMoveWest();
-            break;
-    }
-}
-
-/**
- * Thank you @thebabydino https://codepen.io/thebabydino/pen/PRWqMg/
- * @param {} e 
- */
-var x0 = null, locked = false;
-
-function unify(e) {	return e.changedTouches ? e.changedTouches[0] : e };
-
-// get the starting coords and lock the screen
-function lock(e) {
-    e.preventDefault();
-    let unifiedEvent = unify(e);
-    x0 = unifiedEvent.clientX;
-    y0 = unifiedEvent.clientY;
-};
-
-function detectDrag(e) {
-  e.preventDefault();
-};
-
-// work out which way the swipe went and move that way
-function detectMove(e) {
-  if(!locked) {
-    locked = true;
-    let unifiedEvent = unify(e);
-    let dx = unifiedEvent.clientX - x0, 
-        sx = Math.sign(dx),
-        absX = dx*sx;
-
-    let dy = unifiedEvent.clientY - y0, 
-        sy = Math.sign(dy),
-        absY = dy*sy;
-    
-    if (absY/absX < 1.2 && absX/absY < 1.2) {
-        locked = false;
-        return("no clear direction");
-    } else if (absX/absY > 1) {
-        // this was a horizontal move
-        return (sx > 0) ? canIMoveWest() : canIMoveEast()
-    } else if (absY/absX > 1) {
-        // this was a vertical move
-        return (sy > 0) ? canIMoveNorth() : canIMoveSouth();
-    }
-    
-    x0 = null;
-    locked = false;
-  }
-};
-
 
 /**
  * Get the tile number for the current tile.  eg to see which direction/s we can move
  */
 function getCurrentTileNumber() {
     let currents = document.getElementsByClassName('map-tile current');
-    
+
     if (currents.length != 1) {
         console.log('something went wrong in getCurrentTileNumber. Either too many or not enough tiles');
         return 0;
@@ -421,6 +259,21 @@ function getCurrentTileNumber() {
     let currentTileNumber = currentTileSVG.getAttribute('class');
 
     return currentTileNumber;
+}
+
+function canIMove(direction) {
+    switch (direction) {
+        case 'north':
+            return canIMoveNorth();
+        case 'south':
+            return canIMoveSouth();
+        case 'east':
+            return canIMoveEast();
+        case 'west':
+            return canIMoveWest();
+        default:
+            throw direction + " was not recognised as a direction";
+    }
 }
 
 /**
@@ -452,7 +305,7 @@ function canIMoveNorth() {
             move('north');
             break;
     }
-} 
+}
 
 function canIMoveSouth() {
     let tileNumber = getCurrentTileNumber();
@@ -479,7 +332,7 @@ function canIMoveSouth() {
             move('south');
             break;
     }
-} 
+}
 
 function canIMoveEast() {
 
@@ -535,4 +388,17 @@ function canIMoveWest() {
             move('west');
             break;
     }
-} 
+}
+
+
+export {
+    canIMove,
+    initMap,
+    finished,
+    stopMoving,
+    hideBorderBump,
+    bump,
+    move,
+    recalcCoords,
+    getCurrentTileNumber
+}
