@@ -17,7 +17,7 @@ let map = {
  * Onload - set up the map and show a welcome message
  */
 window.onload = function() {
-    welcome();
+    window.setTimeout(welcome, 1000);
 };
 
 /**
@@ -53,22 +53,25 @@ function initMap() {
 function welcome() {
 
     let messageHolder = document.querySelector('#message-holder');
+    let gotit = document.querySelector('.welcome.message button');
 
     messageHolder.setAttribute('class','shown');
     document.querySelector('.welcome.message').setAttribute('class','welcome message shown');
 
-    messageHolder.addEventListener('click',initMap);
-    messageHolder.addEventListener('touchstart',initMap);
-    messageHolder.addEventListener('click',hideMessages);
-    messageHolder.addEventListener('touchstart',hideMessages);
+    gotit.addEventListener('click',initMap);
+    gotit.addEventListener('touchstart',initMap);
+    gotit.addEventListener('click',hideMessages);
+    gotit.addEventListener('touchstart',hideMessages);
 }
 
-
+/**
+ * Well done you! you reached the end a nd won a warm feeling
+ */
 function finished() {
     
     try {
         // gap of 50ms is just noticeable
-        window.navigator.vibrate([600,200,150,80,1500]);
+        window.navigator.vibrate([600,200,150,80,1200]);
     } catch (error) {
         console.log("Edge doesn't ignore vibrate");
     }
@@ -77,21 +80,26 @@ function finished() {
 
 function showFinishedMessage() {
     let messageHolder = document.querySelector('#message-holder');
+    let resetButton = document.querySelector('.finished.message button');
 
     messageHolder.setAttribute('class','shown');
     document.querySelector('.finished.message').setAttribute('class','welcome message shown');
 
-    messageHolder.addEventListener('click',initMap);
-    messageHolder.addEventListener('click',hideMessages);
-    messageHolder.addEventListener('touchstart',initMap);
-    messageHolder.addEventListener('touchstart',hideMessages);
+    resetButton.addEventListener('click',initMap);
+    resetButton.addEventListener('click',hideMessages);
+    resetButton.addEventListener('touchstart',initMap);
+    resetButton.addEventListener('touchstart',hideMessages);
 }
 
+/**
+ * hide message-holder and all messages
+ */
 function hideMessages() {
     document.querySelector('#message-holder').setAttribute('class','hidden');
     document.querySelector('.welcome.message').setAttribute('class','welcome message hidden');
     document.querySelector('.finished.message').setAttribute('class','finished message hidden');
 }
+
 
 /**
  * Thank you SO https://stackoverflow.com/questions/15617970/wait-for-css-transition#15618028

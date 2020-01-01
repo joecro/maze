@@ -12,6 +12,9 @@
 }
 
 .message {
+    @media (min-aspect-ratio: 1/1) {
+        margin-top: 5%;
+    }
 
     margin: 25% auto 0;
     box-sizing: border-box;
@@ -36,7 +39,7 @@
 
     button {
         cursor: pointer;
-        
+
         font-size: 1.8rem;
         padding: 0.5rem 1.5rem;
 
