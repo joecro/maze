@@ -1,5 +1,5 @@
 import transitionEnd from './browser-specific.js';
-import map from './map.js';
+import { map } from './map.js';
 import { showFinishedMessage } from './messages.js';
 
 /**
@@ -28,7 +28,7 @@ function initMap() {
 
         startTilePath = map[startX][startY];
     }
-
+    
     // startTile is the parent div - need to set class on the child svg
     startTile.children[0].setAttribute('class', startTilePath);
     startTile.setAttribute('data-x-coord', startX);
