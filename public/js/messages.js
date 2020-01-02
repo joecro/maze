@@ -1,4 +1,4 @@
-import { initMap } from './maze.js';
+import { initMap, newMap } from './maze.js';
 /**
  * Display welcome message
  */
@@ -19,7 +19,8 @@ function welcome() {
 
 function showFinishedMessage() {
     let messageHolder = document.querySelector('#message-holder');
-    let resetButton = document.querySelector('.finished.message button');
+    let resetButton = document.querySelector('.finished.message button.reset');
+    let newmapButton = document.querySelector('.finished.message button.newmap');
 
     messageHolder.setAttribute('class', 'shown');
     document.querySelector('.finished.message').setAttribute('class', 'finished message shown');
@@ -28,6 +29,11 @@ function showFinishedMessage() {
     resetButton.addEventListener('click', hideMessages);
     resetButton.addEventListener('touchstart', initMap);
     resetButton.addEventListener('touchstart', hideMessages);
+
+    newmapButton.addEventListener('click', newMap);
+    newmapButton.addEventListener('click', hideMessages);
+    newmapButton.addEventListener('touchstart', newMap);
+    newmapButton.addEventListener('touchstart', hideMessages);
 }
 
 /**

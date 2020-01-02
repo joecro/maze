@@ -1,5 +1,5 @@
 import transitionEnd from './browser-specific.js';
-import { map } from './map.js';
+import { map, generateRandomMap } from './map.js';
 import { showFinishedMessage } from './messages.js';
 
 /**
@@ -12,11 +12,23 @@ backcoords['east'] = 'west';
 backcoords['west'] = 'east';
 
 var mazeLocked = false;
+var tehMap = map; // the MAP
 
 /**
  * any setup that needs doing before user goes running round in the map
  */
+function newMap() {
+    tehMap = generateRandomMap();
+    
+    initMap();
+}
+
+
+/**
+ * refresh the current map as is
+ */
 function initMap() {
+
     let startTilePath = 'tile-016';
     let startTile = document.querySelector('.south.map-tile');
 
@@ -26,7 +38,7 @@ function initMap() {
         startX = Math.floor(6 * Math.random());
         startY = Math.floor(6 * Math.random());
 
-        startTilePath = map[startX][startY];
+        startTilePath = tehMap[startX][startY];
     }
     
     // startTile is the parent div - need to set class on the child svg
@@ -38,7 +50,6 @@ function initMap() {
 
     document.body.focus();
 }
-
 
 /**
 * Well done you! you reached the end and won a warm feeling
@@ -201,7 +212,7 @@ function recalcCoords() {
     north.setAttribute('data-y-coord', currentY - 1);
 
     try {
-        northSVG.setAttribute('class', map[currentX][currentY - 1]);
+        northSVG.setAttribute('class', tehMap[currentX][currentY - 1]);
     } catch (error) {
         console.log('error setting northSVG class to map[' + currentX + '][' + currentY - 1 + ']')
         northSVG.setAttribute('class', 'tile-000');
@@ -211,7 +222,7 @@ function recalcCoords() {
     south.setAttribute('data-y-coord', 1 * currentY + 1);
 
     try {
-        southSVG.setAttribute('class', map[currentX][1 * currentY + 1]);
+        southSVG.setAttribute('class', tehMap[currentX][1 * currentY + 1]);
     } catch (error) {
         console.log('error setting southSVG class to map[' + currentX + '][' + (1 * currentY + 1) + ']')
         southSVG.setAttribute('class', 'tile-000');
@@ -221,7 +232,7 @@ function recalcCoords() {
     east.setAttribute('data-y-coord', currentY);
 
     try {
-        eastSVG.setAttribute('class', map[1 * currentX + 1][currentY]);
+        eastSVG.setAttribute('class', tehMap[1 * currentX + 1][currentY]);
     } catch (error) {
         console.log('error setting eastSVG class to map[' + (1 * currentX + 1) + '][' + currentY + ']')
         eastSVG.setAttribute('class', 'tile-000');
@@ -231,7 +242,7 @@ function recalcCoords() {
     west.setAttribute('data-y-coord', currentY);
 
     try {
-        westSVG.setAttribute('class', map[currentX - 1][currentY]);
+        westSVG.setAttribute('class', tehMap[currentX - 1][currentY]);
     } catch (error) {
         console.log('error setting westSVG class to map[' + (currentX - 1) + '][' + currentY + ']')
         westSVG.setAttribute('class', 'tile-000');
@@ -394,6 +405,7 @@ function canIMoveWest() {
 export {
     canIMove,
     initMap,
+    newMap,
     finished,
     stopMoving,
     hideBorderBump,
