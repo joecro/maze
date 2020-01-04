@@ -14,11 +14,14 @@ backcoords['west'] = 'east';
 var mazeLocked = false;
 var tehMap = map; // the MAP
 
+let mapwidth = 5,
+    mapheight = 5;
+
 /**
  * any setup that needs doing before user goes running round in the map
  */
 function newMap() {
-    tehMap = generateRandomMap();
+    tehMap = generateRandomMap(mapwidth,mapheight);
     
     initMap();
 }
@@ -35,8 +38,8 @@ function initMap() {
     let startX = 0, startY = 0;
 
     while (startTilePath == 'tile-016') {  // don't want to start at the finish :/
-        startX = Math.floor(6 * Math.random());
-        startY = Math.floor(6 * Math.random());
+        startX = Math.floor(mapwidth * Math.random());
+        startY = Math.floor(mapheight * Math.random());
 
         startTilePath = tehMap[startX][startY];
     }

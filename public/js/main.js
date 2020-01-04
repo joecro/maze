@@ -1,4 +1,4 @@
-import { canIMove } from './maze.js';
+import { canIMove, newMap, initMap } from './maze.js';
 import { welcome } from './messages.js';
 
 var inputLocked = false;
@@ -8,6 +8,7 @@ var inputLocked = false;
  */
 window.onload = function () {
     window.setTimeout(welcome, 1000);
+    window.addEventListener('devicemotion', whatsShakin);
 };
 
 
@@ -41,20 +42,34 @@ function logKey(e) {
             e.preventDefault();
             canIMove('north');
             break;
+
         case 'ArrowDown':
         case 'KeyM':
             e.preventDefault();
             canIMove('south');
             break;
+
         case 'ArrowRight':
         case 'KeyK':
             e.preventDefault();
             canIMove('east');
             break;
+
         case 'ArrowLeft':
         case 'KeyJ':
             e.preventDefault();
             canIMove('west');
+            break;
+
+        case 'KeyR':
+            // abort and restart
+            initMap();
+            break;
+
+        case 'Escape':
+        case 'KeyX':
+            // restart  on a new 
+            newMap();
             break;
     }
     
@@ -127,3 +142,24 @@ function detectMove(e) {
         inputLocked = false;
     }
 };
+
+
+let shakes = 0;
+
+function whatsShakin(ev) {
+    let xmotion = ev.acceleration.x;
+
+    if (xmotion > 10) {
+        shakes++;
+
+        window.setTimeout( function() { shakes--; }, 1000 );
+
+        if (shakes > 20) {
+            // that's a biig shake
+            return newMap();
+        } else if (shakes > 10) {
+            // just a normal shake
+            return initMap();
+        }
+    }
+}

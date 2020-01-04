@@ -15,7 +15,7 @@ let map01 = {
 /**
  * generate a random map of given size
  */
-function generateRandomMap(width = 6, height = 6) {
+function generateRandomMap(width = 5, height = 5) {
 
     let oddsFinish = (width * height);
     let pFinish = 1 / oddsFinish;
@@ -31,11 +31,12 @@ function generateRandomMap(width = 6, height = 6) {
 
         for (let j = -1; j <= height; j++) {
             southedge = ( j+1 == height ) ? true : false ;
-            pFinish = finishPlaced ? 0 : ( 1 / oddsFinish-- ) ;
 
             if (i == -1 || i == width || j == -1 || j == height) {
                 map[i][j] = 'tile-000';
             } else  {
+                pFinish = finishPlaced ? 0 : ( 1 / oddsFinish-- ) ;
+                
                 let nexttile = getTileFor(map[i][j-1], map[i-1][j], eastedge, southedge, pFinish);
                 map[i][j] = nexttile;
                 if (nexttile == "tile-016") finishPlaced = true; //'tile-016' is the medal :)
@@ -48,5 +49,5 @@ function generateRandomMap(width = 6, height = 6) {
 
 
 let map = map01;
-map = generateRandomMap();
+//map = generateRandomMap();
 export { map, generateRandomMap };

@@ -183,8 +183,6 @@ function getTileFrom(densityArray, eastedge, southedge, pfinish) {
     // 
     densityArray['tile-016'] = pfinish;
 
-    console.log("Dart was " + dart);
-
     if (eastedge && southedge) {
         targetArray = southEastCornerTilesArray;
     } else if (eastedge && !southedge) {
@@ -195,6 +193,9 @@ function getTileFrom(densityArray, eastedge, southedge, pfinish) {
 
     while (result == "noresult") {
         dart = Math.random();
+
+        console.log("Dart was " + dart);
+        
         targetArray.forEach(tileID => {
 
             if (dart < densityArray[tileID]) {
