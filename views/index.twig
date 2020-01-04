@@ -5,38 +5,106 @@
 {% endblock %}
 
 {% block tilepaths %}
-<svg class="tile-016" viewBox="0 0 100 100">
-  <path class="path-000" d="" />
+<svg class="tile-016" viewBox="0 0 100 100" role="img" 
+     ari-labelled-by="mazeSvgTitle mazeSvgDesc">
+  <title id="mazeSvgTitle">A square maze</title>
+  <desc id="mazeSvgDesc">Use the arrow keys or swipe to move around.</desc>
 
-  <path class="path-001" d="M40 0 v50 h-10 v10 h40 v-10 h-10 v-50 z" />
+  <path title="empty path" class="path-000" d=""
+     ari-labelled-by="mazeSvgTitle mazeSvgDesc">
+    <title id="path000Title">An empty square</title>
+    <desc id="path000Desc">How did you even get here?</desc>
+  </path>
 
-  <path class="path-002" d="M100 40 h-50 v-10 h-10 v40 h10 v-10 h50 z" />
+  <path class="path-001" d="M40 0 v50 h-10 v10 h40 v-10 h-10 v-50 z" 
+     ari-labelled-by="path001Title path001Desc">
+    <title id="path001Title">Dead-end.  Exit to the North only.</title>
+    <desc id="path001Desc"></desc>
+  </path>
 
-  <path class="path-003" d="M40 0 v50 A 10 10 0 0 0 50 60 h50 v-20 h-40 v-40 z" />
+  <path class="path-002" d="M100 40 h-50 v-10 h-10 v40 h10 v-10 h50 z" 
+     ari-labelled-by="path002Title path002Desc">
+    <title id="path002Title">Dead-end.  Exit to the East only.</title>
+    <desc id="path002Desc"></desc>
+  </path>
+
+  <path class="path-003" d="M40 0 v50 A 10 10 0 0 0 50 60 h50 v-20 h-40 v-40 z" 
+     ari-labelled-by="path003Title path003Desc">
+    <title id="path003Title">Corner.  Exits on the North or East.</title>
+    <desc id="path003Desc"></desc>
+  </path>
   
-  <path class="path-004" d="M0 40 h50 v-10 h10 v40 h-10 v-10 h-50 z" />
+  <path class="path-004" d="M0 40 h50 v-10 h10 v40 h-10 v-10 h-50 z" 
+     ari-labelled-by="path004Title path004Desc">
+    <title id="path004Title">Dead-end.  Exit to the West only.</title>
+    <desc id="path004Desc"></desc>
+  </path>
 
-  <path class="path-005" d="M40 0 v40 h-40 v20 h50 A 10 10 0 0 0 60 50 v-60 z" />
+  <path class="path-005" d="M40 0 v40 h-40 v20 h50 A 10 10 0 0 0 60 50 v-60 z" 
+     ari-labelled-by="path005Title path005Desc">
+    <title id="path005Title">Corner.  Exits on the North or West.</title>
+    <desc id="path005Desc"></desc>
+  </path>
 
-  <path class="path-006" d="M0 40 h100 v20 h-100 z" />
+  <path class="path-006" d="M0 40 h100 v20 h-100 z" 
+     ari-labelled-by="path006Title path006Desc">
+    <title id="path006Title">Straight.  Exit to the East or West.</title>
+    <desc id="path006Desc"></desc>
+  </path>
 
-  <path class="path-007" d="M40 0 v40 h-40 v20 h100 v-20 h-40 v-40 z" />
+  <path class="path-007" d="M40 0 v40 h-40 v20 h100 v-20 h-40 v-40 z" 
+     ari-labelled-by="path007Title path007Desc">
+    <title id="path007Title">T-junction.  Exit to the North, East or West.</title>
+    <desc id="path007Desc"></desc>
+  </path>
   
-  <path class="path-008" d="M40 100 v-50 h-10 v-10 h40 v10 h-10 v50 z" />
+  <path class="path-008" d="M40 100 v-50 h-10 v-10 h40 v10 h-10 v50 z" 
+     ari-labelled-by="path008Title path008Desc">
+    <title id="path008Title">Dead-end.  Exit to the South only.</title>
+    <desc id="path008Desc"></desc>
+  </path>
 
-  <path class="path-009" d="M40 0 v100 h20 v-100 z" />
+  <path class="path-009" d="M40 0 v100 h20 v-100 z" 
+     ari-labelled-by="path009Title path009Desc">
+    <title id="path009Title">Straight.  Exit to the North or South.</title>
+    <desc id="path009Desc"></desc>
+  </path>
 
-  <path class="path-010" d="M100 40 h-50 A 10 10 0 0 0 40 50 v50 h20 v-40 h40 z" />
+  <path class="path-010" d="M100 40 h-50 A 10 10 0 0 0 40 50 v50 h20 v-40 h40 z" 
+     ari-labelled-by="path010Title path010Desc">
+    <title id="path010Title">Corner.  Exits on the South or East.</title>
+    <desc id="path010Desc"></desc>
+  </path>
   
-  <path class="path-011" d="M40 0 v100 h20 v-40 h40 v-20 h-40 v-40 z" />
+  <path class="path-011" d="M40 0 v100 h20 v-40 h40 v-20 h-40 v-40 z" 
+     ari-labelled-by="path011Title path011Desc">
+    <title id="path011Title">T-junction.  Exit to the North, South or East.</title>
+    <desc id="path011Desc"></desc>
+  </path>
   
-  <path class="path-012" d="M0 60 h40 v40 h20 v-50 A 10 10 0 0 0 50 40 h-50 z" />
+  <path class="path-012" d="M0 60 h40 v40 h20 v-50 A 10 10 0 0 0 50 40 h-50 z" 
+     ari-labelled-by="path012Title path012Desc">
+    <title id="path012Title">Corner.  Exits on the South or West.</title>
+    <desc id="path012Desc"></desc>
+  </path>
   
-  <path class="path-013" d="M40 0 v40 h-40 v20 h40v40 h20 v-100 z" />
+  <path class="path-013" d="M40 0 v40 h-40 v20 h40v40 h20 v-100 z" 
+     ari-labelled-by="path013Title path013Desc">
+    <title id="path013Title">T-junction.  Exit to the North, South or West.</title>
+    <desc id="path013Desc"></desc>
+  </path>
   
-  <path class="path-014" d="M0 40 h100 v20 h-40 v40 h-20 v-40 h-40 z" />
+  <path class="path-014" d="M0 40 h100 v20 h-40 v40 h-20 v-40 h-40 z" 
+     ari-labelled-by="path014Title path014Desc">
+    <title id="path014Title">T-junction.  Exit to the North, East or West.</title>
+    <desc id="path014Desc"></desc>
+  </path>
   
-  <path class="path-015" d="M40 0 v40 h-40 v20 h40 v40 h20 v-40 h40 v-20 h-40 v-40 z" />
+  <path class="path-015" d="M40 0 v40 h-40 v20 h40 v40 h20 v-40 h40 v-20 h-40 v-40 z" 
+     ari-labelled-by="path015Title path05Desc">
+    <title id="path015Title">Crossroads.  Exit to the North, South, East or West.</title>
+    <desc id="path015Desc"></desc>
+  </path>
 
   <path class="path-016" d="M71.993,56.135c-0.242-0.539-0.777-0.886-1.368-0.886H56.581L50.519,43c-0.253-0.511-0.774-0.834-1.344-0.834
 		s-1.091,0.324-1.344,0.835l-6.06,12.249H28.226c-0.584,0-1.116,0.34-1.361,0.87s-0.161,1.154,0.217,1.601l9.991,11.776
@@ -45,12 +113,18 @@
 		l10.463-11.772C72.139,57.304,72.235,56.673,71.993,56.135z M58.529,68.101c-0.321,0.361-0.448,0.855-0.342,1.326L60.75,80.77
 		l-10.909-5.407c-0.209-0.104-0.438-0.156-0.666-0.156s-0.457,0.052-0.667,0.156L37.602,80.77l2.562-11.342
 		c0.104-0.46-0.014-0.942-0.319-1.302l-8.379-9.877h11.236c0.57,0,1.091-0.323,1.344-0.835l5.128-10.366l5.13,10.366
-		c0.253,0.512,0.774,0.835,1.345,0.835h11.636L58.529,68.101z"/>
+		c0.253,0.512,0.774,0.835,1.345,0.835h11.636L58.529,68.101z"
+     ari-labelled-by="path016Title path016Desc">
+    <title id="path016Title">A medal! Because you finished the maze! </title>
+    <desc id="path016Desc"></desc>
+  </path>
 	<path class="path-016" d="M51,31.053V24.25h16.5c0.828,0,1.5-0.671,1.5-1.5v-16c0-0.829-0.672-1.5-1.5-1.5h-35c-0.829,0-1.5,0.671-1.5,1.5v16
 		c0,0.829,0.671,1.5,1.5,1.5H48v6.809C30.28,31.91,16.125,46.591,16.125,64.518c0,18.472,15.028,33.5,33.5,33.5
 		s33.5-15.028,33.5-33.5C83.125,46.507,68.836,31.778,51,31.053z M34,8.25h32v13H34V8.25z M49.625,95.018
 		c-16.818,0-30.5-13.683-30.5-30.5c0-16.523,13.21-30.01,29.622-30.478c0.391-0.01,1.103-0.01,1.517-0.006
-		c16.522,0.343,29.861,13.88,29.861,30.484C80.125,81.335,66.442,95.018,49.625,95.018z"/>
+		c16.522,0.343,29.861,13.88,29.861,30.484C80.125,81.335,66.442,95.018,49.625,95.018z"
+     ari-labelled-by="path016Title path016Desc">
+  </path>
     
 </svg>
 {% endblock %}

@@ -1,5 +1,5 @@
-import { canIMove, newMap, initMap } from './maze.js';
-import { welcome } from './messages.js';
+import { tryToMove, newMap, initMap } from './maze.js';
+import { welcome, showResettingMessage, showNewMapMessage } from './messages.js';
 
 var inputLocked = false;
 
@@ -40,35 +40,37 @@ function logKey(e) {
         case 'ArrowUp':
         case 'KeyI':
             e.preventDefault();
-            canIMove('north');
+            tryToMove('north');
             break;
 
         case 'ArrowDown':
         case 'KeyM':
             e.preventDefault();
-            canIMove('south');
+            tryToMove('south');
             break;
 
         case 'ArrowRight':
         case 'KeyK':
             e.preventDefault();
-            canIMove('east');
+            tryToMove('east');
             break;
 
         case 'ArrowLeft':
         case 'KeyJ':
             e.preventDefault();
-            canIMove('west');
+            tryToMove('west');
             break;
 
         case 'KeyR':
+            showResettingMessage();
             // abort and restart
             initMap();
             break;
 
         case 'Escape':
         case 'KeyX':
-            // restart  on a new 
+            showNewMapMessage();
+            // restart on a new map
             newMap();
             break;
     }
@@ -132,10 +134,10 @@ function detectMove(e) {
             return ("no clear direction");
         } else if (absX / absY > 1) {
             // this was a horizontal move
-            (sx > 0) ? canIMove('west') : canIMove('east')
+            (sx > 0) ? tryToMove('west') : tryToMove('east')
         } else if (absY / absX > 1) {
             // this was a vertical move
-            (sy > 0) ? canIMove('north') : canIMove('south');
+            (sy > 0) ? tryToMove('north') : tryToMove('south');
         }
 
         x0 = null;

@@ -1,4 +1,4 @@
-import { initMap, newMap } from './maze.js';
+import { initMap, newMap, canIMove } from './maze.js';
 /**
  * Display welcome message
  */
@@ -14,9 +14,51 @@ function welcome() {
     gotit.addEventListener('touchstart', initMap);
     gotit.addEventListener('click', hideMessages);
     gotit.addEventListener('touchstart', hideMessages);
+
+    window.setTimeout(showStuckMessage, 15000);
 }
 
 
+/**
+ * 
+ */
+function showStuckMessage() {
+    
+    let messageHolder = document.querySelector('#message-holder');
+    let gotit = document.querySelector('.reset.message button');
+
+    messageHolder.setAttribute('class', 'shown');
+    document.querySelector('.reset.message').setAttribute('class', 'reset message shown');
+
+    gotit.addEventListener('click', hideMessages);
+    gotit.addEventListener('touchstart', hideMessages);
+}
+
+
+function showResettingMessage() {
+    
+    let messageHolder = document.querySelector('#message-holder');
+
+    messageHolder.setAttribute('class', 'shown');
+    document.querySelector('.resetting.message').setAttribute('class', 'resetting message shown');
+
+    window.setTimeout(hideMessages, 600);
+}
+
+
+function showNewMapMessage() {
+    
+    let messageHolder = document.querySelector('#message-holder');
+
+    messageHolder.setAttribute('class', 'shown');
+    document.querySelector('.newmap.message').setAttribute('class', 'newmap message shown');
+
+    window.setTimeout(hideMessages, 600);
+}
+
+/**
+ * 
+ */
 function showFinishedMessage() {
     let messageHolder = document.querySelector('#message-holder');
     let resetButton = document.querySelector('.finished.message button.reset');
@@ -43,6 +85,42 @@ function hideMessages() {
     document.querySelector('#message-holder').setAttribute('class', 'hidden');
     document.querySelector('.welcome.message').setAttribute('class', 'welcome message hidden');
     document.querySelector('.finished.message').setAttribute('class', 'finished message hidden');
+    document.querySelector('.reset.message').setAttribute('class', 'reset message hidden');
+    document.querySelector('.resetting.message').setAttribute('class', 'resetting message hidden');
+    document.querySelector('.newmap.message').setAttribute('class', 'newmap message hidden');
 }
 
-export { welcome, showFinishedMessage, hideMessages };
+
+/**
+ * 
+ */
+function updateAriaMessages () {
+    
+    let ariaMsg = document.querySelector('#not-north');
+    
+    canIMove('north') ? 
+        ariaMsg.innerHTML = 'can' : 
+        ariaMsg.innerHTML = 'can not' 
+    
+    ariaMsg = document.querySelector('#not-south');
+    
+    canIMove('south') ? 
+        ariaMsg.innerHTML = 'can' : 
+        ariaMsg.innerHTML = 'can not' 
+    
+    ariaMsg = document.querySelector('#not-east');
+    
+    canIMove('east') ? 
+        ariaMsg.innerHTML = 'can' : 
+        ariaMsg.innerHTML = 'can not' 
+    
+    ariaMsg = document.querySelector('#not-west');
+    
+    canIMove('west') ? 
+        ariaMsg.innerHTML = 'can' : 
+        ariaMsg.innerHTML = 'can not' ;
+    
+}
+
+
+export { welcome, showFinishedMessage, showResettingMessage, showNewMapMessage, hideMessages, updateAriaMessages };

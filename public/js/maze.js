@@ -1,15 +1,15 @@
 import transitionEnd from './browser-specific.js';
 import { map, generateRandomMap } from './map.js';
-import { showFinishedMessage } from './messages.js';
+import { showFinishedMessage, updateAriaMessages } from './messages.js';
 
 /**
  * hey buddy, watch my six.
  */
 let backcoords = {};
-backcoords['north'] = 'south';
-backcoords['south'] = 'north';
-backcoords['east'] = 'west';
-backcoords['west'] = 'east';
+    backcoords['north'] = 'south';
+    backcoords['south'] = 'north';
+    backcoords['east'] = 'west';
+    backcoords['west'] = 'east';
 
 var mazeLocked = false;
 var tehMap = map; // the MAP
@@ -31,7 +31,7 @@ function newMap() {
  * refresh the current map as is
  */
 function initMap() {
-
+    
     let startTilePath = 'tile-016';
     let startTile = document.querySelector('.south.map-tile');
 
@@ -66,8 +66,9 @@ function finished() {
         console.log("Edge doesn't ignore vibrate");
     }
 
-    let tid = window.setTimeout(showFinishedMessage, 2000);
+    let tid = window.setTimeout(showFinishedMessage, 1000);
 }
+
 
 /**
  * Remove 'moving' class from a tile element
@@ -83,7 +84,11 @@ function stopMoving(ev) {
         tileEl.setAttribute('class',
             oldClass.replace('entering', '').trim()
         );
-        console.log('  just removed class-=entering');
+        //console.log('  just removed class-=entering');
+
+        let tileID = 'tile-000';
+        tileID = tileEl.children[0].getAttribute('class'); // ASSUMPTION: tile DIV only has one child element
+        updateAriaMessages(tileID);
 
         // wait until the new tile is in place before calculating new coords & tiles
         recalcCoords();
@@ -92,7 +97,7 @@ function stopMoving(ev) {
         tileEl.setAttribute('class',
             oldClass.replace('leaving', '').trim()
         );
-        console.log('  just removed class-=leaving');
+        //console.log('  just removed class-=leaving');
     }
 }
 
@@ -275,27 +280,43 @@ function getCurrentTileNumber() {
     return currentTileNumber;
 }
 
-function canIMove(direction) {
+
+function tryToMove(direction, tileNumber) {
+    if (undefined == tileNumber) {
+        tileNumber = getCurrentTileNumber();
+    }
+
+    canIMove(direction, tileNumber) ? move(direction) : bump(direction);
+}
+
+
+function canIMove(direction, tileNumber) {
+    if (undefined == tileNumber) {
+        tileNumber = getCurrentTileNumber();
+    }
+    
     switch (direction) {
         case 'north':
-            return canIMoveNorth();
+            return canIMoveNorth(tileNumber);
+            break;
         case 'south':
-            return canIMoveSouth();
+            return canIMoveSouth(tileNumber);
+            break;
         case 'east':
-            return canIMoveEast();
+            return canIMoveEast(tileNumber);
+            break;
         case 'west':
-            return canIMoveWest();
+            return canIMoveWest(tileNumber);
+            break;
         default:
-            throw direction + " was not recognised as a direction";
+            throw (direction + " was not recognised as a direction");
     }
 }
 
 /**
  * Check if it's possible to move North from the current tile. (based on available exits)
  */
-function canIMoveNorth() {
-
-    let tileNumber = getCurrentTileNumber();
+function canIMoveNorth(tileNumber) {
 
     switch (tileNumber) {
         case 'tile-000':
@@ -306,8 +327,8 @@ function canIMoveNorth() {
         case 'tile-010':
         case 'tile-012':
         case 'tile-014':
-            bump('north');
-            break;
+        case 'tile-016':
+            return false;
         case 'tile-001':
         case 'tile-003':
         case 'tile-005':
@@ -316,13 +337,13 @@ function canIMoveNorth() {
         case 'tile-011':
         case 'tile-013':
         case 'tile-015':
-            move('north');
-            break;
+            return true;
+        default:
+            throw ('Unrecognised tile ID: ' + tileNumber);
     }
 }
 
-function canIMoveSouth() {
-    let tileNumber = getCurrentTileNumber();
+function canIMoveSouth(tileNumber) {
 
     switch (tileNumber) {
         case 'tile-000':
@@ -333,8 +354,8 @@ function canIMoveSouth() {
         case 'tile-005':
         case 'tile-006':
         case 'tile-007':
-            bump('south');
-            break;
+        case 'tile-016':
+            return false;
         case 'tile-008':
         case 'tile-009':
         case 'tile-010':
@@ -343,14 +364,13 @@ function canIMoveSouth() {
         case 'tile-013':
         case 'tile-014':
         case 'tile-015':
-            move('south');
-            break;
+            return true;
+        default:
+            console.log('Unrecognised tile ID: ' + tileNumber);
     }
 }
 
-function canIMoveEast() {
-
-    let tileNumber = getCurrentTileNumber();
+function canIMoveEast(tileNumber) {
 
     switch (tileNumber) {
         case 'tile-000':
@@ -361,8 +381,8 @@ function canIMoveEast() {
         case 'tile-009':
         case 'tile-012':
         case 'tile-013':
-            bump('east');
-            break;
+        case 'tile-016':
+            return false;
         case 'tile-002':
         case 'tile-003':
         case 'tile-006':
@@ -371,14 +391,13 @@ function canIMoveEast() {
         case 'tile-011':
         case 'tile-014':
         case 'tile-015':
-            move('east');
-            break;
+            return true;
+        default:
+            console.log('Unrecognised tile ID: ' + tileNumber);
     }
 }
 
-function canIMoveWest() {
-
-    let tileNumber = getCurrentTileNumber();
+function canIMoveWest(tileNumber) {
 
     switch (tileNumber) {
         case 'tile-000':
@@ -389,8 +408,8 @@ function canIMoveWest() {
         case 'tile-009':
         case 'tile-010':
         case 'tile-011':
-            bump('west');
-            break;
+        case 'tile-016':
+            return false;
         case 'tile-004':
         case 'tile-005':
         case 'tile-006':
@@ -399,13 +418,15 @@ function canIMoveWest() {
         case 'tile-013':
         case 'tile-014':
         case 'tile-015':
-            move('west');
-            break;
+            return true;
+        default:
+            console.log('Unrecognised tile ID: ' + tileNumber);
     }
 }
 
 
 export {
+    tryToMove,
     canIMove,
     initMap,
     newMap,

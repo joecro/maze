@@ -55,6 +55,41 @@
         <button class="reset">Reset</button>
         <button class="newmap">New map</button>
       </section>
+
+      
+      <section class="reset message hidden" role="alert">
+        <h1>Stuck?</h1>
+        <p>Press 'R' or shake your device to reset the current map - maybe it'll be easier starting from a different spot.</p>
+        <p>Press 'X' or 'Escape' to start again with a new map.  Or shake your device for a bit longer</p>
+        <button class="gotit">Got it!</button>
+      </section>
+
+      
+      <section class="resetting message hidden" role="alert">
+        <h1>Resetting map...</h1>
+      </section>
+
+      
+      <section class="newmap message hidden" role="alert">
+        <h1>Creating new maze...</h1>
+      </section>
     </div>
+
+
+    <div role="region" class="directions visually-hidden" aria-live="polite">
+        <p>You're at a <span id="tile-type">medal!</span>.</p>
+        <p class="direction direction-north">
+          You <span class="notthisway" id="not-north">not</span> move North.
+        </p>
+        <p class="direction direction-south">
+          You <span class="notthisway" id="not-south">not</span> move South.
+        </p>
+        <p class="direction direction-east">
+          You <span class="notthisway" id="not-east">not</span> move East.
+        </p>
+        <p class="direction direction-west">
+          You <span class="notthisway" id="not-west">not</span> move West.
+        </p>
+    </div> 
   </body>
 </html>

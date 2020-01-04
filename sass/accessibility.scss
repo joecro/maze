@@ -1,0 +1,9 @@
+/* should hide text from sighted users, not from assistive tech */
+.visually-hidden {
+    text-indent: -9999px;
+}
+
+/* I think this is enough to hide text from screenreaders */
+.hide {
+    display: none;
+}

@@ -1,3 +1,4 @@
+import { canIMove } from './maze.js';
 
 let tilesArray = [
     'tile-001',
@@ -210,80 +211,21 @@ function getTileFrom(densityArray, eastedge, southedge, pfinish) {
 }
 
 function getTileFor(northtile, westtile, eastedge = false, southedge = false, pfinish = 0) {
-    if (!hasSouthExit(northtile) && !hasEastExit(westtile)) {
+    if (!canIMove('south',northtile) && !canIMove('east',westtile)) {
         return getTileFrom(q0densities, eastedge, southedge, pfinish);
     }
     
-    if (hasSouthExit(northtile) && !hasEastExit(westtile)) {
+    if (canIMove('south',northtile) && !canIMove('east',westtile)) {
         return getTileFrom(q1densities, eastedge, southedge, pfinish);
     }
     
-    if (!hasSouthExit(northtile) && hasEastExit(westtile)) {
+    if (!canIMove('south',northtile) && canIMove('east',westtile)) {
         return getTileFrom(q2densities, eastedge, southedge, pfinish);
     }
     
-    if (hasSouthExit(northtile) && hasEastExit(westtile)) {
+    if (canIMove('south',northtile) && canIMove('east',westtile)) {
         return getTileFrom(q3densities, eastedge, southedge, pfinish);
     }
 }
-
-
-
-function hasSouthExit(tileID) {
-    switch (tileID) {
-        case 'tile-000':
-        case 'tile-001':
-        case 'tile-002':
-        case 'tile-003':
-        case 'tile-004':
-        case 'tile-005':
-        case 'tile-006':
-        case 'tile-007':
-        case 'tile-016':
-            return false;
-
-        case 'tile-008':
-        case 'tile-009':
-        case 'tile-010':
-        case 'tile-011':
-        case 'tile-012':
-        case 'tile-013':
-        case 'tile-014':
-        case 'tile-015':
-            return true;
-
-        default:
-            return false;
-    }
-}
-
-function hasEastExit(tileID) {
-    switch (tileID) {
-        case 'tile-000':
-        case 'tile-001':
-        case 'tile-004':
-        case 'tile-005':
-        case 'tile-008':
-        case 'tile-009':
-        case 'tile-012':
-        case 'tile-013':
-        case 'tile-016':
-            return false;
-
-        case 'tile-002':
-        case 'tile-003':
-        case 'tile-006':
-        case 'tile-007':
-        case 'tile-010':
-        case 'tile-011':
-        case 'tile-014':
-        case 'tile-015':
-            return true;
-
-        default:
-            return false;
-    }
-}
-
 
 export default getTileFor;
