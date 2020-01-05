@@ -11,6 +11,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body tabindex="1">
+
+    <div id="message-holder" class="hidden" role="alert">
+      <section class="welcome message hidden" role="alert" aria-live="polite">
+        <h1>Welcome</h1>
+        <p>You have entered a maze.</p>
+        <p>Use arrow keys, or swipe to move around.</p>
+        <button class="gotit" title="Hide this message and go back to the maze">Got it!</button>
+      </section>
+      
+
+      <section class="finished message hidden" role="alert" aria-live="polite">
+        <h1>Well done</h1>
+        <p>You have completed the maze and earned a warm feeling!</p>
+        <p>Refresh the page to start again, or hit one of the buttons below.</p>
+        <button class="reset" title="Reset the current maze and start again from a new position">Reset</button>
+        <button class="newmap" title="Start again in a new maze">New map</button>
+      </section>
+
+      
+      <section class="reset message hidden" role="alert" aria-live="polite">
+        <h1>Stuck?</h1>
+        <p>Press 'R' or shake your device to reset the current map - maybe it'll be easier starting from a different spot.</p>
+        <p>Press 'X' or 'Escape' to start again with a new map.  Or shake your device for a bit longer.</p>
+        <button class="gotit" title="Hide this message and go back to the maze">Got it!</button>
+      </section>
+
+      
+      <section class="resetting message hidden" role="alert" aria-live="polite">
+        <h1>Resetting map...</h1>
+      </section>
+
+      
+      <section class="newmap message hidden" role="alert" aria-live="polite">
+        <h1>Creating new maze...</h1>
+      </section>
+    </div>
+  
+    <div role="alert" class="directions hidden visually-hidden" aria-live="polite">
+        <section class="direction direction-north" onclick="javascript:alert('TODO: trigger move from here');">
+          You can not move North.
+        </section>
+        <p class="direction direction-south">
+          You can not move South.
+        </p>
+        <p class="direction direction-east">
+          You can not move East.
+        </p>
+        <p class="direction direction-west">
+          You can not move West.
+        </p>
+    </div> 
+
     <div class="map-tile current" data-x-coord=0 data-y-coord=0>
           {% block tilepaths %}{% endblock %}
     </div>
@@ -39,57 +91,7 @@
     <div class="border west-border"></div>
 
   
-    <div id="message-holder" class="hidden">
-      <section class="welcome message hidden" role="alert">
-        <h1>Welcome</h1>
-        <p>You have entered a maze.</p>
-        <p>Use arrow keys, or swipe to move around.</p>
-        <button class="gotit">Got it!</button>
-      </section>
-      
-
-      <section class="finished message hidden" role="alert">
-        <h1>Well done</h1>
-        <p>You have completed the maze and earned a warm feeling!</p>
-        <p>Refresh the page to start again, or hit one of the buttons below.</p>
-        <button class="reset">Reset</button>
-        <button class="newmap">New map</button>
-      </section>
-
-      
-      <section class="reset message hidden" role="alert">
-        <h1>Stuck?</h1>
-        <p>Press 'R' or shake your device to reset the current map - maybe it'll be easier starting from a different spot.</p>
-        <p>Press 'X' or 'Escape' to start again with a new map.  Or shake your device for a bit longer</p>
-        <button class="gotit">Got it!</button>
-      </section>
-
-      
-      <section class="resetting message hidden" role="alert">
-        <h1>Resetting map...</h1>
-      </section>
-
-      
-      <section class="newmap message hidden" role="alert">
-        <h1>Creating new maze...</h1>
-      </section>
-    </div>
 
 
-    <div role="region" class="directions visually-hidden" aria-live="polite">
-        <p>You're at a <span id="tile-type">medal!</span>.</p>
-        <p class="direction direction-north">
-          You <span class="notthisway" id="not-north">not</span> move North.
-        </p>
-        <p class="direction direction-south">
-          You <span class="notthisway" id="not-south">not</span> move South.
-        </p>
-        <p class="direction direction-east">
-          You <span class="notthisway" id="not-east">not</span> move East.
-        </p>
-        <p class="direction direction-west">
-          You <span class="notthisway" id="not-west">not</span> move West.
-        </p>
-    </div> 
   </body>
 </html>

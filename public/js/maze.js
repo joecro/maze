@@ -51,6 +51,9 @@ function initMap() {
 
     move('south');
 
+    let directions = document.querySelector('.directions.hidden');
+    directions.setAttribute('class','directions visually-hidden');
+
     document.body.focus();
 }
 
