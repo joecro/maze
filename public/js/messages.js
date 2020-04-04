@@ -107,10 +107,10 @@ function hideMessages() {
 
 
 /**
- * 
+ * w
  */
 function updateAriaMessages () {
-    
+    // PROBLEM:  NVDA reads the whole alert section for each sub-element that has been changed
     let ariaMsg = document.querySelector('.direction.direction-north');
     
     canIMove('north') ? 

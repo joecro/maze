@@ -1,5 +1,5 @@
 import transitionEnd from './browser-specific.js';
-import { map, generateRandomMap } from './map.js';
+import { map as defaultMap, generateRandomMap } from './map.js';
 import { showFinishedMessage, updateAriaMessages } from './messages.js';
 
 /**
@@ -12,7 +12,7 @@ let backcoords = {};
     backcoords['west'] = 'east';
 
 var mazeLocked = false;
-var tehMap = map; // the MAP
+var tehMap = defaultMap; // the MAP
 
 let mapwidth = 5,
     mapheight = 5;
@@ -51,7 +51,8 @@ function initMap() {
 
     move('south');
 
-    let directions = document.querySelector('.directions.hidden');
+    // TODO: better name than 'directions'
+    let directions = document.querySelector('.directions');
     directions.setAttribute('class','directions visually-hidden');
 
     document.body.focus();
@@ -259,7 +260,7 @@ function recalcCoords() {
         westSVG.setAttribute('class', 'tile-000');
     }
 
-    if (map[currentX][currentY] == 'tile-016') {  //then you finished. Go you!
+    if (tehMap[currentX][currentY] == 'tile-016') {  //then you finished. Go you!
         finished();
     }
 }
