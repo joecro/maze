@@ -7,6 +7,7 @@ var inputLocked = false;
  * Onload - set up the map and show a welcome message
  */
 window.onload = function () {
+    //window.setTimeout(initMap, 600);
     window.setTimeout(welcome, 1000);
     window.addEventListener('devicemotion', whatsShakin);
 };
@@ -63,6 +64,7 @@ function logKey(e) {
 
         case 'KeyR':
             showResettingMessage();
+            document.querySelector('.map-tile.current').className = "map-tile";
             // abort and restart
             initMap();
             break;
@@ -70,6 +72,7 @@ function logKey(e) {
         case 'Escape':
         case 'KeyX':
             showNewMapMessage();
+            document.querySelector('.map-tile.current').className = "map-tile";
             // restart on a new map
             newMap();
             break;
@@ -134,10 +137,10 @@ function detectMove(e) {
             return ("no clear direction");
         } else if (absX / absY > 1) {
             // this was a horizontal move
-            (sx > 0) ? tryToMove('west') : tryToMove('east')
+            (sx > 0) ? tryToMove('east') : tryToMove('west')
         } else if (absY / absX > 1) {
             // this was a vertical move
-            (sy > 0) ? tryToMove('north') : tryToMove('south');
+            (sy > 0) ? tryToMove('south') : tryToMove('north');
         }
 
         x0 = null;

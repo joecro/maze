@@ -2,20 +2,14 @@ import transitionEnd from './browser-specific.js';
 import { map as defaultMap, generateRandomMap } from './map.js';
 import { showFinishedMessage, updateAriaMessages } from './messages.js';
 
-/**
- * hey buddy, watch my six.
- */
-let backcoords = {};
-    backcoords['north'] = 'south';
-    backcoords['south'] = 'north';
-    backcoords['east'] = 'west';
-    backcoords['west'] = 'east';
 
 var mazeLocked = false;
 var tehMap = defaultMap; // the MAP
 
 let mapwidth = 6,
     mapheight = 6;
+
+let steps = [];
 
 /**
  * any setup that needs doing before user goes running round in the map
@@ -32,18 +26,41 @@ function newMap() {
  */
 function initMap() {
 
+    let nTiles = mapheight * mapwidth;
+    let remaining = nTiles;
+    let currentSet = false;
+    let thisClass = "";
     let tileNumber = 0;
     let tiles = document.getElementsByClassName('map-tile');
 
     for (let row = 0; row < mapheight; row++) {
         for (let col = 0; col < mapwidth; col++) {
-            tiles[tileNumber++].firstElementChild.setAttribute('class', tehMap[row][col]);
+            thisClass = tehMap[row][col];
+            if (!currentSet && Math.random() < 1/remaining--) {
+                tiles[tileNumber].className += " current";
+                currentSet = true;
+            }
+            tiles[tileNumber++].firstElementChild.setAttribute('class', thisClass);
         }
     }
 
+    move('current');
+
+    let stepLength = 1/mapwidth;
+    let firstStep = stepLength / 2;
+    let nextStep = firstStep;
+
+    // set up 'steps' - these are used in CSS to move the pointr around the map
+    while (nextStep < 1) {
+        // add the next step to the array
+        steps.push(nextStep);
+
+        nextStep += stepLength;
+    }
+    
     // TODO: better name than 'directions'
-    //let directions = document.querySelector('.directions');
-    //directions.setAttribute('class','directions visually-hidden');
+    let directions = document.querySelector('.directions');
+    directions.setAttribute('class','directions visually-hidden');
 
     document.body.focus();
 }
@@ -61,38 +78,6 @@ function finished() {
     }
 
     let tid = window.setTimeout(showFinishedMessage, 1000);
-}
-
-
-/**
- * Remove 'moving' class from a tile element
- * @param ev 
- */
-function stopMoving(ev) {
-    let tileEl = ev.target;
-    let oldClass = tileEl.getAttribute('class');
-
-    console.log(' stopMoving: ' + oldClass);
-
-    if (oldClass.includes('entering')) {
-        tileEl.setAttribute('class',
-            oldClass.replace('entering', '').trim()
-        );
-        //console.log('  just removed class-=entering');
-
-        let tileID = 'tile-000';
-        tileID = tileEl.children[0].getAttribute('class'); // ASSUMPTION: tile DIV only has one child element
-        updateAriaMessages(tileID);
-
-        // wait until the new tile is in place before calculating new coords & tiles
-        recalcCoords();
-        mazeLocked = false;
-    } else if (oldClass.includes('leaving')) {
-        tileEl.setAttribute('class',
-            oldClass.replace('leaving', '').trim()
-        );
-        //console.log('  just removed class-=leaving');
-    }
 }
 
 
@@ -137,122 +122,49 @@ function hideBorderBump(ev) {
 
 
 /**
- * Move the current tile out of view and bring the next one in
+ * Move the pointer along the map
  * @param {} direction 
  */
 function move(direction) {
-    if (!mazeLocked) {
-        mazeLocked = true;
-
-        let targets = document.getElementsByClassName(direction);
-        let currents = document.getElementsByClassName('current');
-        let recycles = document.getElementsByClassName(backcoords[direction]);
-
-        if (targets.length != 1 || currents.length != 1 || recycles.length != 1) {
-            console.log('something went wrong in move. Either too many or not enough tiles');
-            return 0;
-        };
-
-        if (targets[0].getAttribute('class').includes('entering')) {
-            console.log('Target tile was still moving');
-            return 0;
-        }
-
-        if (currents[0].getAttribute('class').includes('leaving')) {
-            console.log('Current tile was still moving');
-            return 0;
-        }
-
-        let current = currents[0];
-        let target = targets[0];
-        let recycle = recycles[0];
-
-        target.addEventListener(transitionEnd, stopMoving, false);
-        current.addEventListener(transitionEnd, stopMoving, false);
-
-        // move the new tile into position
-        target.setAttribute('class', 'map-tile current entering');
-        console.log('started moving - map-tile current entering');
-
-        // move the old tile out - it will stay in that direction
-        current.setAttribute('class', 'map-tile leaving ' + backcoords[direction]);
-        console.log('start moving - map-tile leaving ' + backcoords[direction]);
-
-        // grab a tile that just went out of reach and recycle it
-        recycle.setAttribute('class', 'map-tile ' + direction);
-    }
-}
-
-/**
- * After moving, reset the surrounding tiles to the right paths
- */
-function recalcCoords() {
-    let currents = document.getElementsByClassName('map-tile current');
-    let norths = document.getElementsByClassName('map-tile north');
-    let souths = document.getElementsByClassName('map-tile south');
-    let easts = document.getElementsByClassName('map-tile east');
-    let wests = document.getElementsByClassName('map-tile west');
-
-    if (currents.length != 1 || norths.length != 1 || souths.length != 1 || wests.length != 1 || easts.length != 1) {
-        console.log('something went wrong in recalcCoords. Either too many or not enough tiles');
-        return 0;
-    };
-
-    let current = currents[0];
-    let north = norths[0], northSVG = north.children[0];
-    let south = souths[0], southSVG = south.children[0];
-    let east = easts[0], eastSVG = east.children[0];
-    let west = wests[0], westSVG = west.children[0];
-
-    // get current coords from current tile
-    let currentX = current.getAttribute('data-x-coord');
-    let currentY = current.getAttribute('data-y-coord');
-
-    console.log('currrent coords are: X = ' + currentX + ', Y = ' + currentY);
-
-    north.setAttribute('data-x-coord', currentX);
-    north.setAttribute('data-y-coord', currentY - 1);
-
-    try {
-        northSVG.setAttribute('class', tehMap[currentX][currentY - 1]);
-    } catch (error) {
-        console.log('error setting northSVG class to map[' + currentX + '][' + currentY - 1 + ']')
-        northSVG.setAttribute('class', 'tile-000');
+    if (mazeLocked) {
+        //return false;
     }
 
-    south.setAttribute('data-x-coord', currentX);
-    south.setAttribute('data-y-coord', 1 * currentY + 1);
+    mazeLocked = true;
 
-    try {
-        southSVG.setAttribute('class', tehMap[currentX][1 * currentY + 1]);
-    } catch (error) {
-        console.log('error setting southSVG class to map[' + currentX + '][' + (1 * currentY + 1) + ']')
-        southSVG.setAttribute('class', 'tile-000');
-    }
+    let currentTile = document.querySelector('.map-tile.current');
+    let currentX = 1.0 * currentTile.getAttribute('data-x-coord');
+    let currentY = 1.0 * currentTile.getAttribute('data-y-coord');
 
-    east.setAttribute('data-x-coord', 1 * currentX + 1);
-    east.setAttribute('data-y-coord', currentY);
+    let newX = currentX, newY = currentY; 
+    let pointers = document.querySelectorAll('.pointer');
 
-    try {
-        eastSVG.setAttribute('class', tehMap[1 * currentX + 1][currentY]);
-    } catch (error) {
-        console.log('error setting eastSVG class to map[' + (1 * currentX + 1) + '][' + currentY + ']')
-        eastSVG.setAttribute('class', 'tile-000');
-    }
+        
+    switch (direction) {
+        case('current'):
+            break;
+        case 'north':
+            newY -= 1;
+            break;
+        case 'south':
+            newY += 1;
+            break;
+        case 'east':
+            newX += 1;
+            break;
+        case 'west':
+            newX -= 1;
+            break;
+        default:
+            throw (direction + " was not recognised as a direction");
+    }   
 
-    west.setAttribute('data-x-coord', currentX - 1);
-    west.setAttribute('data-y-coord', currentY);
+    pointers.forEach(node => (node.style['top'] = 100 * steps[newY] + '%'));
+    pointers.forEach(node => (node.style['left'] = 100 * steps[newX] + '%'));
 
-    try {
-        westSVG.setAttribute('class', tehMap[currentX - 1][currentY]);
-    } catch (error) {
-        console.log('error setting westSVG class to map[' + (currentX - 1) + '][' + currentY + ']')
-        westSVG.setAttribute('class', 'tile-000');
-    }
 
-    if (tehMap[currentX][currentY] == 'tile-016') {  //then you finished. Go you!
-        finished();
-    }
+    currentTile.className = "map-tile";
+    document.querySelector(".map-tile[data-x-coord='" + newX + "'][data-y-coord='" + newY + "']").className += " current";
 }
 
 
@@ -290,6 +202,9 @@ function canIMove(direction, tileNumber) {
     }
     
     switch (direction) {
+        case('current'):
+            return true;
+            break;
         case 'north':
             return canIMoveNorth(tileNumber);
             break;
@@ -425,10 +340,8 @@ export {
     initMap,
     newMap,
     finished,
-    stopMoving,
     hideBorderBump,
     bump,
     move,
-    recalcCoords,
     getCurrentTileNumber
 }

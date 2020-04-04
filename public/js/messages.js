@@ -7,6 +7,7 @@ let updateIndex = 0;
  * Display welcome message
  */
 function welcome() {
+    initMap();
 
     try {
         // gap of 50ms is just noticeable
@@ -23,14 +24,21 @@ function welcome() {
 
     gotit.addEventListener('click', function(){
         window.setTimeout(showStuckMessage, 15000);
-        initMap();
+
+        let pointers = document.querySelectorAll('.pointer');
+
+        pointers.forEach(pointer => (pointer.style['display'] = 'block'));
         hideMessages();
     });
     gotit.addEventListener('touchstart', function(){
         window.setTimeout(showStuckMessage, 15000);
-        initMap();
+        
+        let pointers = document.querySelectorAll('.pointer');
+
+        pointers.forEach(pointer => (pointer.style['display'] = 'block'));
         hideMessages();
     });
+
 }
 
 

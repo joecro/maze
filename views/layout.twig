@@ -63,13 +63,13 @@
         </p>
     </div> 
 
-    <div id="pointer"></div>
+    <div class="pointer"></div>
+    <div class="pointer mask"></div>
 
     <div id="themap">
       {% for j in 0..5 %}
         {% for i in 0..5 %}
       <div class="map-tile" data-x-coord={{i}} data-y-coord={{j}}>
-        {% block tilepaths %}{% endblock %}
         <svg class="tile-000" viewBox="0 0 100 100" role="img">
 
   <path title="empty path" class="path-000" d=""

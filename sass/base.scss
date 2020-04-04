@@ -27,7 +27,7 @@ a {
     height: 100vh;
 }
 
-#pointer {
+.pointer {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -37,9 +37,21 @@ a {
     top: 8.333%;
     background: red;
     border: 3px solid firebrick;
-    z-index: 9999;
+    z-index: 853;
     transform: translate(-50%, -50%);
     transition: all 0.5s ease 0s;
+
+    // will be displayed when I'm reeady
+    display: none;
+
+    &.mask {
+        width: 500px;
+        height: 500px;
+        top: 8.333%;
+        background: none;
+        border: 3000px solid darkseagreen;
+        transition: all 0.8s ease 0s;
+    }
 }
 
 .map-tile {
@@ -49,29 +61,8 @@ a {
 
     &.current {
         z-index: 100;
-    }
-
-    &.north {
-        top: 0;
-        transform: translate(-50%,-100%);
-    }
-  
-    &.south {
-        top: 0;
-        transform: translate(-50%,100%);
-    }
-  
-    &.east {
-        left: 0;
-        transform: translate(100%,-50%);
-    }
-  
-    &.west {
-        left: 0;
-        transform: translate(-100%,-50%);
-    }
-  
-    > svg {
+    }  
+      > svg {
         @media (max-aspect-ratio: 1/1) {
             height:101%;
         }
