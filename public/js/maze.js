@@ -14,8 +14,8 @@ let backcoords = {};
 var mazeLocked = false;
 var tehMap = defaultMap; // the MAP
 
-let mapwidth = 5,
-    mapheight = 5;
+let mapwidth = 6,
+    mapheight = 6;
 
 /**
  * any setup that needs doing before user goes running round in the map
@@ -31,29 +31,19 @@ function newMap() {
  * refresh the current map as is
  */
 function initMap() {
-    
-    let startTilePath = 'tile-016';
-    let startTile = document.querySelector('.south.map-tile');
 
-    let startX = 0, startY = 0;
+    let tileNumber = 0;
+    let tiles = document.getElementsByClassName('map-tile');
 
-    while (startTilePath == 'tile-016') {  // don't want to start at the finish :/
-        startX = Math.floor(mapwidth * Math.random());
-        startY = Math.floor(mapheight * Math.random());
-
-        startTilePath = tehMap[startX][startY];
+    for (let row = 0; row < mapheight; row++) {
+        for (let col = 0; col < mapwidth; col++) {
+            tiles[tileNumber++].firstElementChild.setAttribute('class', tehMap[row][col]);
+        }
     }
-    
-    // startTile is the parent div - need to set class on the child svg
-    startTile.children[0].setAttribute('class', startTilePath);
-    startTile.setAttribute('data-x-coord', startX);
-    startTile.setAttribute('data-y-coord', startY);
-
-    move('south');
 
     // TODO: better name than 'directions'
-    let directions = document.querySelector('.directions');
-    directions.setAttribute('class','directions visually-hidden');
+    //let directions = document.querySelector('.directions');
+    //directions.setAttribute('class','directions visually-hidden');
 
     document.body.focus();
 }

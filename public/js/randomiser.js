@@ -43,10 +43,10 @@ let southEdgeTilesArray = [
 
 
 let southEastCornerTilesArray = [
+    'tile-000',
     'tile-001',
     'tile-004',
-    'tile-005',
-    'tile-016'
+    'tile-005'
 ];
 
 
@@ -83,7 +83,7 @@ let densities = {
  */
 let q0densities = {
     'tile-016': 0,
-    'tile-000': 0,
+    'tile-000': 0.01,
     'tile-001': 0,
     'tile-002': 0.12,
     'tile-003': 0,
@@ -176,15 +176,14 @@ let q3densities = {
  * Pick a tile from a density array, based on a Math.random() number
  * @param {*} densityArray 
  */
-function getTileFrom(densityArray, eastedge, southedge, pfinish) {
+function getTileFrom(densityArray, eastedge, southedge) {
+    let debug = false;
     let result = "noresult";
     let dart = 0;
     let targetArray = tilesArray;
+    let seCorner = eastedge && southedge;
 
-    // 
-    densityArray['tile-016'] = pfinish;
-
-    if (eastedge && southedge) {
+    if (seCorner) {
         targetArray = southEastCornerTilesArray;
     } else if (eastedge && !southedge) {
         targetArray = eastEdgeTilesArray;
@@ -193,16 +192,16 @@ function getTileFrom(densityArray, eastedge, southedge, pfinish) {
     }
 
     while (result == "noresult") {
-        dart = Math.random();
+        dart = seCorner? 0.001 : Math.random();
 
-        console.log("Dart was " + dart);
+        if (debug) console.log("Dart was " + dart);
         
         targetArray.forEach(tileID => {
 
             if (dart < densityArray[tileID]) {
                 result = tileID;
                 dart = 2.0; // remove dart from board
-                console.log("dart was less than " + densityArray[tileID]);
+                if (debug) console.log("dart was less than " + densityArray[tileID]);
             }
         });
     }
@@ -210,21 +209,21 @@ function getTileFrom(densityArray, eastedge, southedge, pfinish) {
     return result;
 }
 
-function getTileFor(northtile, westtile, eastedge = false, southedge = false, pfinish = 0) {
+function getTileFor(northtile, westtile, eastedge = false, southedge = false) {
     if (!canIMove('south',northtile) && !canIMove('east',westtile)) {
-        return getTileFrom(q0densities, eastedge, southedge, pfinish);
+        return getTileFrom(q0densities, eastedge, southedge);
     }
     
     if (canIMove('south',northtile) && !canIMove('east',westtile)) {
-        return getTileFrom(q1densities, eastedge, southedge, pfinish);
+        return getTileFrom(q1densities, eastedge, southedge);
     }
     
     if (!canIMove('south',northtile) && canIMove('east',westtile)) {
-        return getTileFrom(q2densities, eastedge, southedge, pfinish);
+        return getTileFrom(q2densities, eastedge, southedge);
     }
     
     if (canIMove('south',northtile) && canIMove('east',westtile)) {
-        return getTileFrom(q3densities, eastedge, southedge, pfinish);
+        return getTileFrom(q3densities, eastedge, southedge);
     }
 }
 

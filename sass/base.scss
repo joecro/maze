@@ -17,19 +17,35 @@ a {
     display: none;
 }
 
+#themap { 
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    height: 100vh;
+}
+
+#pointer {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: absolute;
+    left: 41.666%;
+    box-shadow: #232 0 0 10px;
+    top: 8.333%;
+    background: red;
+    border: 3px solid firebrick;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease 0s;
+}
+
 .map-tile {
     
-    min-height: 100vh;
-    min-width: 100vw;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
-    transition: all 0.5s;
-
-    z-index: -100;
+    position: relative;
+    overflow: hidden;
 
     &.current {
         z-index: 100;
@@ -57,11 +73,23 @@ a {
   
     > svg {
         @media (max-aspect-ratio: 1/1) {
-            height:101vh;
+            height:101%;
         }
+        @media (min-aspect-ratio: 1/1) {
+            width:101%;
+        }
+        min-height: 100%;
+        min-width: 100%;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+        transition: all 0.5s;
+
+        z-index: -100;
         
-        display: block;
-        margin: 0 auto;
         background-color: $map-color-bg;
 
         &.tile-016 {
