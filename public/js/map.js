@@ -1,4 +1,4 @@
-import getTileFor from './randomiser.js'
+import { getTileFor, resetMedal } from './randomiser.js'
 
 /**
  * Build a maxe-map
@@ -17,9 +17,12 @@ let map01 = {
  */
 function generateRandomMap(width = 6, height = 6) {
 
+    resetMedal();
+
     let map = {},
         eastedge = false,
-        southedge = false;
+        southedge = false,
+        nTiles = (width - 1) * (height - 1);
 
     for (let j = -1; j <= height; j++) {
         southedge = ( j+1 == height ) ? true : false ;
@@ -31,7 +34,7 @@ function generateRandomMap(width = 6, height = 6) {
             if (i == -1 || j == -1 || i == width || j == height ) {
                 map[j][i] = 'tile-000';
             } else  {                
-                let nexttile = getTileFor(map[j-1][i], map[j][i-1], eastedge, southedge);
+                let nexttile = getTileFor(map[j-1][i], map[j][i-1], eastedge, southedge, nTiles--);
                 map[j][i] = nexttile;
             }
         }

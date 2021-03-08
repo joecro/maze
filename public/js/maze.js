@@ -6,6 +6,9 @@ import { showFinishedMessage, updateAriaMessages } from './messages.js';
 var mazeLocked = false;
 var tehMap = defaultMap; // the MAP
 
+/**
+ * TODO: fix templating so that I can dynamically set the size of the map
+ */
 let mapwidth = 6,
     mapheight = 6;
 
@@ -36,6 +39,7 @@ function initMap() {
     for (let row = 0; row < mapheight; row++) {
         for (let col = 0; col < mapwidth; col++) {
             thisClass = tehMap[row][col];
+            tiles[tileNumber].className = "map-tile";
             if (!currentSet && Math.random() < 1/remaining--) {
                 tiles[tileNumber].className += " current";
                 currentSet = true;
@@ -43,8 +47,6 @@ function initMap() {
             tiles[tileNumber++].firstElementChild.setAttribute('class', thisClass);
         }
     }
-
-    move('current');
 
     let stepLength = 1/mapwidth;
     let firstStep = stepLength / 2;
@@ -57,6 +59,8 @@ function initMap() {
 
         nextStep += stepLength;
     }
+
+    move('current');
     
     // TODO: better name than 'directions'
     let directions = document.querySelector('.directions');
@@ -127,6 +131,7 @@ function hideBorderBump(ev) {
  */
 function move(direction) {
     if (mazeLocked) {
+        // TODO: lock the maze until movement has finished
         //return false;
     }
 
@@ -164,7 +169,13 @@ function move(direction) {
 
 
     currentTile.className = "map-tile";
-    document.querySelector(".map-tile[data-x-coord='" + newX + "'][data-y-coord='" + newY + "']").className += " current";
+    let newTile = document.querySelector(".map-tile[data-x-coord='" + newX + "'][data-y-coord='" + newY + "']");
+    newTile.className += " current";
+
+    if (newTile.firstElementChild.className.baseVal.indexOf("tile-016") >= 0) {
+        finished();
+    }
+    mazeLocked = false;
 }
 
 
