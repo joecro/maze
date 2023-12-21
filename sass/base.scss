@@ -3,6 +3,11 @@
 @import "alerts";
 @import "accessibility";
 
+:root {
+    --nCols: 6;
+    --nRows: 6;
+}
+
 body {
     overflow:hidden;
     margin:0;
@@ -22,8 +27,8 @@ a {
     top: 0;
     width: 100vw;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(var(--nCols), 1fr);
+    grid-template-rows: repeat(var(--nRows), 1fr);
     height: 100vh;
 }
 
@@ -63,14 +68,8 @@ a {
         z-index: 100;
     }  
       > svg {
-        @media (max-aspect-ratio: 1/1) {
-            height:101%;
-        }
-        @media (min-aspect-ratio: 1/1) {
-            width:101%;
-        }
-        min-height: 100%;
-        min-width: 100%;
+        min-height: 101%;
+        min-width: 101%;
 
         position: absolute;
         top: 50%;
@@ -84,8 +83,12 @@ a {
         background-color: $map-color-bg;
 
         &.tile-016 {
-            max-width: 100vw;
-            max-height: 100vh;
+            box-sizing: border-box;
+            border: 10px solid $map-color-path;
+            border-radius: 20px;
+
+            width: 100%;
+            height: 100%;
         }
 
         > path {
