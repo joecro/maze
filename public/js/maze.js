@@ -9,7 +9,7 @@ var tehMap = defaultMap; // the MAP
 /**
  * TODO: fix templating so that I can dynamically set the size of the map
  */
-let mapwidth = 6,
+var mapwidth = 6,
     mapheight = 6;
 
 let steps = [];
@@ -17,8 +17,9 @@ let steps = [];
 /**
  * any setup that needs doing before user goes running round in the map
  */
-function newMap() {
-    tehMap = generateRandomMap(mapwidth,mapheight);
+function newMap(size = 6) {
+    mapheight = size, mapwidth = size;
+    tehMap = generateRandomMap(mapheight,mapwidth);
     
     initMap();
 }
@@ -33,13 +34,31 @@ function initMap() {
     let remaining = nTiles;
     let currentSet = false;
     let thisClass = "";
-    let tileNumber = 0;
-    let tiles = document.getElementsByClassName('map-tile');
 
+    // TODO: 
+    //    make sure there are exactly nTiles = mapheight * mapwidth .map-tile elements
+    var tiles = document.getElementsByClassName('map-tile'); 
+
+    while ( tiles.length > nTiles ) {
+        tiles[0].remove(); // pop
+    }
+
+    while ( tiles.length < nTiles ) {
+        tiles[0].parentElement.appendChild(tiles[0].cloneNode(true));  // push
+    }
+
+    //    set #tehmap { grid-template-columns: repeat(mapwidth, 1fr);   grid-template-rows: repeat(mapheight, 1fr); }
+    document.documentElement.style.setProperty('--nCols', mapwidth);
+    document.documentElement.style.setProperty('--nRows', mapheight);
+
+    let tileNumber = 0;
     for (let row = 0; row < mapheight; row++) {
         for (let col = 0; col < mapwidth; col++) {
             thisClass = tehMap[row][col];
             tiles[tileNumber].className = "map-tile";
+            tiles[tileNumber].setAttribute("data-x-coord", col);
+            tiles[tileNumber].setAttribute("data-y-coord", row);
+            
             if (!currentSet && Math.random() < 1/remaining--) {
                 tiles[tileNumber].className += " current";
                 currentSet = true;
@@ -48,6 +67,8 @@ function initMap() {
         }
     }
 
+    // ick. this assumes the map is always n x n tiles - no rectangles. also 'steps' is not a great descriptor
+    steps = [];
     let stepLength = 1/mapwidth;
     let firstStep = stepLength / 2;
     let nextStep = firstStep;
@@ -98,10 +119,11 @@ function bump(direction) {
     };
 
     let border = borders[0];
-    border.addEventListener(transitionEnd, hideBorderBump, false);
 
     let currentClass = border.getAttribute('class');
     border.setAttribute('class', currentClass + ' bump');
+
+    window.setTimeout(() => { border.setAttribute('class', currentClass); }, 100 );
 
     try {
         // gap of 50ms is just noticeable
@@ -109,19 +131,6 @@ function bump(direction) {
     } catch (error) {
         console.log("Edge doesn't ignore vibrate");
     }
-}
-
-/**
- * Clean up 'bump' border 
- * @param {Event} ev 
- */
-function hideBorderBump(ev) {
-    let borderElement = ev.target;
-    let bumpClass = borderElement.getAttribute('class');
-
-    borderElement.setAttribute('class', bumpClass.replace('bump', '').trim());
-
-    mazeLocked = false;
 }
 
 
@@ -351,7 +360,6 @@ export {
     initMap,
     newMap,
     finished,
-    hideBorderBump,
     bump,
     move,
     getCurrentTileNumber

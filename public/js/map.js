@@ -32,7 +32,7 @@ function generateRandomMap(width = 6, height = 6) {
             eastedge = ( i+1 == width ) ? true : false ;
 
             if (i == -1 || j == -1 || i == width || j == height ) {
-                map[j][i] = 'tile-000';
+                map[j][i] = 'tile-000'; // these will never display on screen, but they are considered by the algorithm in getTileFor()
             } else  {                
                 let nexttile = getTileFor(map[j-1][i], map[j][i-1], eastedge, southedge, nTiles--);
                 map[j][i] = nexttile;
